@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Schedule</string>
+
+    <string name="hello_world">Hello world!</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="action_confirm">Confirm</string>
+
+    <string name="title_activity_main">Schedule</string>
+    <string name="title_activity_setting">SettingActivity</string>
+</resources>
