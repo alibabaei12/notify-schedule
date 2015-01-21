@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.WakefulBroadcastReceiver;
 import android.widget.Toast;
@@ -16,6 +17,8 @@ import javax.inject.Inject;
  * @author Pin Khe "Jake" Loo (12 January, 2015)
  */
 public class NotifyReceiver extends WakefulBroadcastReceiver {
+    private static final String TAG = NotifyReceiver.class.getName();
+
     public static final String ALARM_ID = "ALARM_ID";
     public static final String ALARM_MODE = "ALARM_MODE";
 
@@ -27,8 +30,8 @@ public class NotifyReceiver extends WakefulBroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Intent serviceIntent = new Intent(context, NotifyService.class);
-        serviceIntent.putExtra(ALARM_ID, intent.getLongExtra(ALARM_ID, -1));
-        serviceIntent.putExtra(ALARM_MODE, intent.getIntExtra(ALARM_MODE, RINGER_NORMAL)); // weird
+//        serviceIntent.setAction(intent.getAction());
+        serviceIntent.setData(intent.getData());
 
         startWakefulService(context, serviceIntent);
     }
@@ -39,19 +42,14 @@ public class NotifyReceiver extends WakefulBroadcastReceiver {
         }
         Intent mIntent = new Intent(context, NotifyReceiver.class);
         Calendar calendar = Calendar.getInstance();
+
+        mIntent.setData(Uri.parse("jsched://" + uniqueId + "/silent" ));
+        PendingIntent pIntent = PendingIntent.getBroadcast(context, 0, mIntent, 0);
         calendar.setTimeInMillis(System.currentTimeMillis()); //startTimestamp
         calendar.add(Calendar.SECOND, 5);
-
-        // Alarm that set ringer from normal to silent
-        mIntent.putExtra(ALARM_ID, uniqueId);
-        mIntent.putExtra(ALARM_MODE, RINGER_SILENT);
-        PendingIntent pIntent = PendingIntent.getBroadcast(context, 0, mIntent, 0);
         mAlarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pIntent);
 
-        // Alarm that set ringer from silent to normal
-        mIntent = new Intent(context, NotifyReceiver.class);
-        mIntent.putExtra(ALARM_ID, uniqueId);
-        mIntent.putExtra(ALARM_MODE, RINGER_NORMAL);
+        mIntent.setData(Uri.parse("jsched://" + uniqueId + "/normal"));
         pIntent = PendingIntent.getBroadcast(context, 0, mIntent, 0);
         calendar.setTimeInMillis(System.currentTimeMillis()); //endTimestamp
         calendar.add(Calendar.SECOND, 10);
@@ -64,15 +62,14 @@ public class NotifyReceiver extends WakefulBroadcastReceiver {
         }
 
         Intent mIntent = new Intent(context, NotifyReceiver.class);
-        mIntent.putExtra(ALARM_ID, uniqueId);
 
         // Pending intent that reset phone from normal to silent mode
-        mIntent.putExtra(ALARM_MODE, RINGER_SILENT);
+        mIntent.setData(Uri.parse("jsched://" + uniqueId + "/silent"));
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, mIntent, 0);
         mAlarmManager.cancel(pendingIntent);
 
         // Pending intent that reset phone from silent to normal mode
-        mIntent.putExtra(ALARM_MODE, RINGER_NORMAL);
+        mIntent.setData(Uri.parse("jsched://" + uniqueId + "/normal"));
         pendingIntent = PendingIntent.getBroadcast(context, 0, mIntent, 0);
         mAlarmManager.cancel(pendingIntent);
     }

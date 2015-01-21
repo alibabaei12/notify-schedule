@@ -27,13 +27,16 @@ public class NotifyService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        final long alarmId = intent.getLongExtra(NotifyReceiver.ALARM_ID, -1024);
-        final int alarmMode = intent.getIntExtra(NotifyReceiver.ALARM_MODE, NotifyReceiver.RINGER_NORMAL);
+        final String dataString = intent.getDataString();
 
-        if (alarmMode == NotifyReceiver.RINGER_NORMAL) {
-            Log.i(TAG, "Received Ringer Normal from " + alarmId);
-        } else if (alarmMode == NotifyReceiver.RINGER_SILENT) {
-            Log.i(TAG, "Received Ringer Silent from " + alarmId);
+        AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+
+        if (dataString.contains("normal")) {
+            Log.i(TAG, "Received Ringer Normal from " + dataString);
+            am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+        } else if (dataString.contains("silent")) {
+            Log.i(TAG, "Received Ringer Silent from " + dataString);
+            am.setRingerMode(AudioManager.RINGER_MODE_SILENT);
         }
 
         NotifyReceiver.completeWakefulIntent(intent);
