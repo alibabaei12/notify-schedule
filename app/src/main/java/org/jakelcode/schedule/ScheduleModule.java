@@ -1,5 +1,8 @@
 package org.jakelcode.schedule;
 
+import android.app.AlarmManager;
+import android.content.Context;
+
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -11,6 +14,7 @@ import dagger.Provides;
 @Module(
       injects = {
               NotifyService.class,
+              NotifyReceiver.class,
               MainActivity.class,
               SettingActivity.class
       }
@@ -23,4 +27,12 @@ public class ScheduleModule {
     public ScheduleModule(ScheduleApplication a) {
         application = a;
     }
+
+//    @Provides @Singleton Context provideContext() {
+//        return application;
+//    }
+
+//    @Provides @Singleton AlarmManager provideAlarmManager() {
+//        return (AlarmManager) application.getSystemService(Context.ALARM_SERVICE);
+//    }
 }

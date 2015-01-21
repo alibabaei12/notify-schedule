@@ -1,8 +1,10 @@
 package org.jakelcode.schedule;
 
+import android.content.Context;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -10,25 +12,35 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import io.fabric.sdk.android.Fabric;
 
 
 public class MainActivity extends ActionBarActivity {
+    private final NotifyReceiver receiver = new NotifyReceiver();
+    private int Alarm_ID = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ScheduleApplication app = (ScheduleApplication) getApplication();
-        app.inject(app);
+        ((ScheduleApplication) getApplication()).inject(this);
 
-        Fabric.with(this, new Crashlytics());
+        if (!BuildConfig.DEBUG)
+            Fabric.with(this, new Crashlytics());
+
         setContentView(R.layout.activity_main);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.include_toolbar);
+        setSupportActionBar(toolbar);
     }
 
 
@@ -49,12 +61,27 @@ public class MainActivity extends ActionBarActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        } else if (id == R.id.add_alarm) {
+            AlarmOperation(true);
+            return true;
+        } else if (id == R.id.remove_alarm) {
+            AlarmOperation(false);
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-
+    public void AlarmOperation(boolean mode) {
+        if (mode) { // adding
+            Alarm_ID++;
+            receiver.addAlarm(getApplicationContext(), Alarm_ID, 0, 0);
+            Toast.makeText(getApplicationContext(), "Alarm Added : " + Alarm_ID, Toast.LENGTH_SHORT).show();
+        } else {
+            receiver.removeAlarm(getApplicationContext(), Alarm_ID);
+            Toast.makeText(getApplicationContext(), "Alarm Removed : " + Alarm_ID, Toast.LENGTH_SHORT).show();
+        }
+    }
 
     final static class ScheduleViewHolder extends RecyclerView.ViewHolder {
 //        @InjectView(R.id.card_title_text) EditText title;
@@ -91,7 +118,7 @@ public class MainActivity extends ActionBarActivity {
                         case MotionEvent.ACTION_DOWN: // Short and Long click
                             break;
                     }
-                    return true;
+                    return false;
                 }
             });
             itemView.setOnDragListener(new View.OnDragListener() {
@@ -104,7 +131,7 @@ public class MainActivity extends ActionBarActivity {
                             }
                             break;
                     }
-                    return true;
+                    return false;
                 }
             });
 

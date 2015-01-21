@@ -10,6 +10,8 @@ import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.IBinder;
+import android.util.Log;
+import android.widget.Toast;
 
 import javax.inject.Inject;
 
@@ -17,13 +19,24 @@ import javax.inject.Inject;
  * @author Pin Khe "Jake" Loo (11 January, 2015)
  */
 public class NotifyService extends IntentService {
+    private static final String TAG = NotifyService.class.getName();
+
     public NotifyService() {
         super("notify-service");
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
+        final long alarmId = intent.getLongExtra(NotifyReceiver.ALARM_ID, -1024);
+        final int alarmMode = intent.getIntExtra(NotifyReceiver.ALARM_MODE, NotifyReceiver.RINGER_NORMAL);
 
+        if (alarmMode == NotifyReceiver.RINGER_NORMAL) {
+            Log.i(TAG, "Received Ringer Normal from " + alarmId);
+        } else if (alarmMode == NotifyReceiver.RINGER_SILENT) {
+            Log.i(TAG, "Received Ringer Silent from " + alarmId);
+        }
+
+        NotifyReceiver.completeWakefulIntent(intent);
     }
 //    private final String SERVICE_PATH = "org.jakelcode.service.NOTIFY";
 //
