@@ -7,7 +7,11 @@
     <dimen name="spacing_medium">8dp</dimen>
     <dimen name="spacing_large">16dp</dimen>
 
-    <dimen name="text_size_small">6sp</dimen>
-    <dimen name="text_size_medium">12sp</dimen>
-    <dimen name="text_size_large">18sp</dimen>
+    <dimen name="text_size_mini">8sp</dimen>
+    <dimen name="text_size_small">12sp</dimen>
+    <dimen name="text_size_medium">16sp</dimen>
+    <dimen name="text_size_large">24sp</dimen>
+
+    <dimen name="schedule_card_height">148dp</dimen>
+    <dimen name="schedule_card_image_width">128dp</dimen>
 </resources>

@@ -13,8 +13,6 @@ import dagger.Provides;
  */
 @Module(
       injects = {
-              NotifyService.class,
-              NotifyReceiver.class,
               MainActivity.class,
               SettingActivity.class
       }

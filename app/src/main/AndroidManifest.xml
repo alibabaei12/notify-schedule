@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:name=".ScheduleApplication"
@@ -23,7 +24,14 @@
         </activity>
 
         <receiver android:name=".NotifyReceiver"/>
+        <receiver android:name=".DailyCheckReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
         <service android:name=".NotifyService"/>
+        <service android:name=".DailyCheckService"/>
 
         <meta-data
             android:name="com.crashlytics.ApiKey"

@@ -1,5 +1,6 @@
 package org.jakelcode.schedule;
 
+import android.content.Context;
 import android.os.SystemClock;
 import android.text.format.DateUtils;
 
@@ -69,16 +70,32 @@ public class ScheduleData {
         return mStartTerm;
     }
 
+    public String getStartTermString(Context c) {
+        return DateUtils.formatDateTime(c, mStartTerm, DateUtils.FORMAT_SHOW_DATE);
+    }
+
     public long getEndTerm() {
         return mEndTerm;
+    }
+
+    public String getEndTermString(Context c) {
+        return DateUtils.formatDateTime(c, mEndTerm, DateUtils.FORMAT_SHOW_DATE);
     }
 
     public long getStartTimestamp() {
         return mStartTimestamp;
     }
 
+    public String getStartTimeString(Context c) {
+        return DateUtils.formatDateTime(c, mStartTimestamp, DateUtils.FORMAT_SHOW_TIME);
+    }
+
     public long getEndTimestamp() {
         return mEndTimestamp;
+    }
+
+    public String getEndTimeString(Context c) {
+        return DateUtils.formatDateTime(c, mEndTimestamp, DateUtils.FORMAT_SHOW_TIME);
     }
 
     public boolean isEnded() {

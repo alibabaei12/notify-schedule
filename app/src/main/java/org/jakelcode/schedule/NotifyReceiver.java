@@ -5,25 +5,15 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Bundle;
 import android.support.v4.content.WakefulBroadcastReceiver;
-import android.widget.Toast;
 
 import java.util.Calendar;
-
-import javax.inject.Inject;
 
 /**
  * @author Pin Khe "Jake" Loo (12 January, 2015)
  */
 public class NotifyReceiver extends WakefulBroadcastReceiver {
     private static final String TAG = NotifyReceiver.class.getName();
-
-    public static final String ALARM_ID = "ALARM_ID";
-    public static final String ALARM_MODE = "ALARM_MODE";
-
-    public static final int RINGER_NORMAL = 0;
-    public static final int RINGER_SILENT = 1;
 
     private AlarmManager mAlarmManager;
 
@@ -52,7 +42,7 @@ public class NotifyReceiver extends WakefulBroadcastReceiver {
         mIntent.setData(Uri.parse("jsched://" + uniqueId + "/normal"));
         pIntent = PendingIntent.getBroadcast(context, 0, mIntent, 0);
         calendar.setTimeInMillis(System.currentTimeMillis()); //endTimestamp
-        calendar.add(Calendar.SECOND, 10);
+        calendar.add(Calendar.SECOND, 15);
         mAlarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pIntent);
     }
 
