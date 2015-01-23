@@ -22,7 +22,7 @@ public class DailyCheckReceiver extends WakefulBroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if (!intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED) &&
                 !intent.getAction().equals(ACTION_DAILY_CHECK)) {
-            Log.i(TAG, "Invalid Actions");
+            Log.i(TAG, "Invalid Actions : " + intent.getAction());
             return;
         }
 
@@ -50,5 +50,22 @@ public class DailyCheckReceiver extends WakefulBroadcastReceiver {
         PendingIntent pendingIntent = PendingIntent.getService(c, 0, intent, 0);
 
         mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+    }
+
+    public void removeDailyAlarm(Context c) {
+        AlarmManager mAlarmManager = (AlarmManager) c.getSystemService(Context.ALARM_SERVICE);
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(System.currentTimeMillis());
+        cal.set(Calendar.HOUR, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.AM_PM, Calendar.AM);
+
+        Intent intent = new Intent(c, DailyCheckReceiver.class);
+        intent.setAction(ACTION_DAILY_CHECK);
+
+        PendingIntent pendingIntent = PendingIntent.getService(c, 0, intent, 0);
+
+        mAlarmManager.cancel(pendingIntent);
     }
 }

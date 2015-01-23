@@ -20,7 +20,7 @@ public class NotifyReceiver extends WakefulBroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Intent serviceIntent = new Intent(context, NotifyService.class);
-//        serviceIntent.setAction(intent.getAction());
+//        serviceIntent.setAction(intent.getAction());  // Worth to have it?
         serviceIntent.setData(intent.getData());
 
         startWakefulService(context, serviceIntent);
@@ -31,19 +31,14 @@ public class NotifyReceiver extends WakefulBroadcastReceiver {
             mAlarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         }
         Intent mIntent = new Intent(context, NotifyReceiver.class);
-        Calendar calendar = Calendar.getInstance();
 
         mIntent.setData(Uri.parse("jsched://" + uniqueId + "/silent" ));
         PendingIntent pIntent = PendingIntent.getBroadcast(context, 0, mIntent, 0);
-        calendar.setTimeInMillis(System.currentTimeMillis()); //startTimestamp
-        calendar.add(Calendar.SECOND, 5);
-        mAlarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pIntent);
+        mAlarmManager.set(AlarmManager.RTC_WAKEUP, startTimestamp, pIntent);
 
         mIntent.setData(Uri.parse("jsched://" + uniqueId + "/normal"));
         pIntent = PendingIntent.getBroadcast(context, 0, mIntent, 0);
-        calendar.setTimeInMillis(System.currentTimeMillis()); //endTimestamp
-        calendar.add(Calendar.SECOND, 15);
-        mAlarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pIntent);
+        mAlarmManager.set(AlarmManager.RTC_WAKEUP, endTimestamp, pIntent);
     }
 
     public void removeAlarm(Context context, long uniqueId) {

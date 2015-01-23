@@ -18,7 +18,7 @@ import dagger.Provides;
       }
 )
 public class ScheduleModule {
-    //private final String PREFERENCE_NAME = "schedule";
+//    private final String PREFERENCE_NAME = "schedule";
 
     private final ScheduleApplication application;
 

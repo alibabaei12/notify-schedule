@@ -11,9 +11,7 @@ import java.util.List;
  * @author Pin Khe "Jake" Loo (11 January, 2015)
  */
 public class ScheduleData {
-    enum DayOfWeek {
-        MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
-    }
+    private long mUniqueId;
 
     private String mTitle;
     private String mLocation;
@@ -22,7 +20,7 @@ public class ScheduleData {
     private String mDescription;
 
     // Day of week that event happens
-    private List<DayOfWeek> mDays;
+    private List<Integer> mDays;
 
     private long mStartTerm;
     private long mEndTerm;
@@ -39,7 +37,7 @@ public class ScheduleData {
 
     public ScheduleData(String title, String location, String desc,
                         long startTerm, long endTerm, long startTime, long endTime,
-                        List<DayOfWeek> days) {
+                        List<Integer> days) {
         this.mTitle = title;
         this.mLocation = location;
         this.mDescription = desc;
@@ -62,7 +60,7 @@ public class ScheduleData {
          return mDescription;
     }
 
-    public List<DayOfWeek> getActiveDays() {
+    public List<Integer> getActiveDays() {
         return mDays;
     }
 
@@ -109,5 +107,9 @@ public class ScheduleData {
     public long getDisableTimeLeftInMillis() {
         return (mDisableTimestamp - System.currentTimeMillis() > 0) ?
                 (mDisableTimestamp - System.currentTimeMillis()) : (mDisableTimestamp);
+    }
+
+    public long getUniqueId() {
+        return mUniqueId;
     }
 }

@@ -1,6 +1,7 @@
 package org.jakelcode.schedule;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.support.v4.util.TimeUtils;
@@ -43,11 +44,12 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.internal.ButterKnifeProcessor;
 import io.fabric.sdk.android.Fabric;
+import me.grantland.widget.AutofitHelper;
 
 
 public class MainActivity extends ActionBarActivity {
     private final NotifyReceiver receiver = new NotifyReceiver();
-    private int Alarm_ID = 0;
+    private int Alarm_ID = 0; // Just for debug purpose.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,29 +64,6 @@ public class MainActivity extends ActionBarActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.include_toolbar);
         setSupportActionBar(toolbar);
-
-
-        // Testing cards.
-        ScheduleData testScheduleData = new ScheduleData("Awesome Club Meeting Pineapple Sweet awesome", "Room 101", "mini mini long stuffs.", 0, 0, 1100, 1220, null);
-        ScheduleData testScheduleData2 = new ScheduleData("Awesome Club Meeting", "Room 201", "mini mini long stuffs.", 0, 0, 1100, 1220, null);
-        List<ScheduleData> scheduleList = new ArrayList<ScheduleData>();
-
-        scheduleList.add(testScheduleData);
-        scheduleList.add(testScheduleData2);
-
-        ScheduleListAdapter adapter = new ScheduleListAdapter(getApplicationContext(), scheduleList);
-        RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.schedule_recycle_view);
-
-        // improve performance if you know that changes in content
-        // do not change the size of the RecyclerView
-        mRecyclerView.setHasFixedSize(true);
-
-        // use a linear layout manager
-        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-
-        mRecyclerView.setAdapter(adapter);
     }
 
 
@@ -105,6 +84,8 @@ public class MainActivity extends ActionBarActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        // FOR DEBUG PURPOSE.
+        // adding button to screen is ugly and 'more' work.
         } else if (id == R.id.add_alarm) {
             AlarmOperation(true);
             return true;
@@ -116,6 +97,8 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    // FOR DEBUG PURPOSE.
+    // A test for receiver.addAlarm and receiver.removeAlarm
     public void AlarmOperation(boolean mode) {
         if (mode) { // adding
             Alarm_ID++;
@@ -127,6 +110,23 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
+    /*
+    public void setupRecycleView() {
+        ScheduleListAdapter adapter = new ScheduleListAdapter(mAppContext, scheduleList);
+        RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.schedule_recycle_view);
+
+        // improve performance if you know that changes in content
+        // do not change the size of the RecyclerView
+        mRecyclerView.setHasFixedSize(true);
+
+        // use a linear layout manager
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(mAppContext);
+        mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        mRecyclerView.setAdapter(adapter);
+    }
+    */
     final static class ScheduleViewHolder extends RecyclerView.ViewHolder {
         @InjectView(R.id.schedule_card_image) ImageView image;
         @InjectView(R.id.schedule_card_title) TextView title;
@@ -157,33 +157,6 @@ public class MainActivity extends ActionBarActivity {
                     from(parent.getContext()).
                     inflate(R.layout.view_schedule_card, parent, false);
 
-            final int HORIZONTAL_DRAG_THRESHOLD = 100;
-            final int VERTICAL_DRAG_THRESHOLD = 50;
-
-            itemView.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    switch (event.getAction()) {
-                        case MotionEvent.ACTION_DOWN: // Short and Long click
-                            break;
-                    }
-                    return false;
-                }
-            });
-            itemView.setOnDragListener(new View.OnDragListener() {
-                @Override
-                public boolean onDrag(View v, DragEvent event) {
-                    switch (event.getAction()) {
-                        case DragEvent.ACTION_DRAG_ENDED:
-                            if (Math.abs(event.getX()) > HORIZONTAL_DRAG_THRESHOLD && Math.abs(event.getY()) < VERTICAL_DRAG_THRESHOLD) {
-
-                            }
-                            break;
-                    }
-                    return false;
-                }
-            });
-
             return new ScheduleViewHolder(itemView);
         }
 
@@ -196,15 +169,13 @@ public class MainActivity extends ActionBarActivity {
             holder.image.setBackgroundColor(getResources().getColor(R.color.light_blue_900));
 
             holder.title.setText(model.getTitle());
+            AutofitHelper.create(holder.title).setMaxLines(2); // Fitting a bunch of text into 2 lines
 
             holder.location.setText(model.getLocation());
 
             holder.description.setText(model.getDescription());
 
-//            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm");
-//            simpleDateFormat.format(new Date(System.currentTimeMillis()));
-
-            holder.time.setText(DateUtils.formatDateTime(mContext, System.currentTimeMillis(), DateUtils.FORMAT_SHOW_DATE) + " ~ " + model.getEndTimestamp());
+            holder.time.setText(model.getStartTimeString(mContext) + " ~ " + model.getEndTimeString(mContext));
         }
 
         @Override
@@ -213,13 +184,4 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    private static int getLineCount(CharSequence text, TextPaint paint, float size, float width,
-                                    DisplayMetrics displayMetrics) {
-        paint.setTextSize(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, size,
-                displayMetrics));
-        StaticLayout layout = new StaticLayout(text, paint, (int)width,
-                Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, true);
-
-        return layout.getLineCount();
-    }
 }
