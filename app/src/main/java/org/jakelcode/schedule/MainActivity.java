@@ -31,6 +31,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
+import com.path.android.jobqueue.JobManager;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -43,11 +44,16 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.internal.ButterKnifeProcessor;
+import de.greenrobot.event.EventBus;
 import io.fabric.sdk.android.Fabric;
 import me.grantland.widget.AutofitHelper;
 
 
 public class MainActivity extends ActionBarActivity {
+    @Inject EventBus mEventBus;
+    @Inject JobManager mJobManager;
+    @Inject Context mAppContext;
+
     private final NotifyReceiver receiver = new NotifyReceiver();
     private int Alarm_ID = 0; // Just for debug purpose.
 
@@ -55,7 +61,7 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ((ScheduleApplication) getApplication()).inject(this);
+        ScheduleApplication.inject(this);
 
         if (!BuildConfig.DEBUG)
             Fabric.with(this, new Crashlytics());
@@ -110,9 +116,8 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    /*
     public void setupRecycleView() {
-        ScheduleListAdapter adapter = new ScheduleListAdapter(mAppContext, scheduleList);
+        ScheduleListAdapter adapter = new ScheduleListAdapter(mAppContext, null);
         RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.schedule_recycle_view);
 
         // improve performance if you know that changes in content
@@ -126,7 +131,7 @@ public class MainActivity extends ActionBarActivity {
 
         mRecyclerView.setAdapter(adapter);
     }
-    */
+
     final static class ScheduleViewHolder extends RecyclerView.ViewHolder {
         @InjectView(R.id.schedule_card_image) ImageView image;
         @InjectView(R.id.schedule_card_title) TextView title;
@@ -183,5 +188,4 @@ public class MainActivity extends ActionBarActivity {
             return mModelList.size();
         }
     }
-
 }

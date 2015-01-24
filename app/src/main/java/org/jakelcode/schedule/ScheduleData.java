@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.SystemClock;
 import android.text.format.DateUtils;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -60,7 +61,7 @@ public class ScheduleData {
          return mDescription;
     }
 
-    public List<Integer> getActiveDays() {
+    public List<Integer> getDayList() {
         return mDays;
     }
 

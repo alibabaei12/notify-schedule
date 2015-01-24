@@ -3,10 +3,14 @@ package org.jakelcode.schedule;
 import android.app.AlarmManager;
 import android.content.Context;
 
+import com.path.android.jobqueue.JobManager;
+
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import de.greenrobot.event.EventBus;
+import io.realm.Realm;
 
 /**
  * @author Pin Khe "Jake" Loo (11 January, 2015)
@@ -14,7 +18,9 @@ import dagger.Provides;
 @Module(
       injects = {
               MainActivity.class,
-              SettingActivity.class
+              SettingActivity.class,
+
+              DailyCheckService.class
       }
 )
 public class ScheduleModule {
@@ -26,11 +32,23 @@ public class ScheduleModule {
         application = a;
     }
 
-//    @Provides @Singleton Context provideContext() {
-//        return application;
-//    }
+    @Provides @Singleton Context provideContext() {
+        return application;
+    }
 
 //    @Provides @Singleton AlarmManager provideAlarmManager() {
 //        return (AlarmManager) application.getSystemService(Context.ALARM_SERVICE);
 //    }
+
+    @Provides @Singleton JobManager provideJobManager() {
+        return new org.jakelcode.schedule.job.JobManager(application);
+    }
+
+    @Provides @Singleton EventBus provideEventBus() {
+        return EventBus.getDefault();
+    }
+
+    @Provides @Singleton Realm provideRealm() {
+        return Realm.getInstance(application);
+    }
 }

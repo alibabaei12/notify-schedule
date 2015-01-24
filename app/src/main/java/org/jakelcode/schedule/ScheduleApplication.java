@@ -8,7 +8,7 @@ import dagger.ObjectGraph;
  * @author Pin Khe "Jake" Loo (11 January, 2015)
  */
 public class ScheduleApplication extends Application {
-    private ObjectGraph objectGraph;
+    private static ObjectGraph objectGraph;
 
     @Override
     public void onCreate() {
@@ -17,7 +17,7 @@ public class ScheduleApplication extends Application {
         objectGraph = ObjectGraph.create(new ScheduleModule(this));
     }
 
-    public void inject(Object o) {
+    public static void inject(Object o) {
         objectGraph.inject(o);
     }
 }
