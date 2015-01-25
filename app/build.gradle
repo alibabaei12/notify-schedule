@@ -53,5 +53,6 @@ dependencies {
     compile 'com.android.support:support-v4:21.0.3'
 
     compile 'me.grantland:autofittextview:0.2.+'
+    compile 'com.rengwuxian.materialedittext:library:1.8.2'
     compile 'io.realm:realm-android:0.78.0'
 }

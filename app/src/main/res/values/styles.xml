@@ -9,11 +9,14 @@
 
         <item name="android:textColorPrimary">@android:color/white</item>
         <item name="android:textColorSecondary">@color/grey_500</item>
-
         <item name="windowActionBar">false</item>
     </style>
 
     <style name="MainTheme" parent="AppTheme.Base"/>
+
+    <style name="EditTheme" parent="AppTheme.Base">
+        <item name="homeAsUpIndicator">@drawable/abc_ic_ab_back_mtrl_am_alpha</item>
+    </style>
 
 
 </resources>

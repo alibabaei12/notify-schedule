@@ -33,6 +33,8 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.path.android.jobqueue.JobManager;
 
+import org.jakelcode.schedule.realm.Schedule;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -53,8 +55,8 @@ public class MainActivity extends ActionBarActivity {
     @Inject EventBus mEventBus;
     @Inject JobManager mJobManager;
     @Inject Context mAppContext;
+    @Inject NotifyReceiver mNotifyReceiver;
 
-    private final NotifyReceiver receiver = new NotifyReceiver();
     private int Alarm_ID = 0; // Just for debug purpose.
 
     @Override
@@ -62,6 +64,8 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
 
         ScheduleApplication.inject(this);
+        ButterKnife.inject(this);
+
 
         if (!BuildConfig.DEBUG)
             Fabric.with(this, new Crashlytics());
@@ -70,6 +74,7 @@ public class MainActivity extends ActionBarActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.include_toolbar);
         setSupportActionBar(toolbar);
+        setupRecycleView();
     }
 
 
@@ -98,6 +103,9 @@ public class MainActivity extends ActionBarActivity {
         } else if (id == R.id.remove_alarm) {
             AlarmOperation(false);
             return true;
+        } else if (id == R.id.edit_activity) {
+            startActivity(new Intent(mAppContext, EditActivity.class));
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -108,16 +116,17 @@ public class MainActivity extends ActionBarActivity {
     public void AlarmOperation(boolean mode) {
         if (mode) { // adding
             Alarm_ID++;
-            receiver.addAlarm(getApplicationContext(), Alarm_ID, 0, 0);
+            mNotifyReceiver.addAlarm(getApplicationContext(), Alarm_ID, 0, 0);
             Toast.makeText(getApplicationContext(), "Alarm Added : " + Alarm_ID, Toast.LENGTH_SHORT).show();
         } else {
-            receiver.removeAlarm(getApplicationContext(), Alarm_ID);
+            mNotifyReceiver.removeAlarm(getApplicationContext(), Alarm_ID);
             Toast.makeText(getApplicationContext(), "Alarm Removed : " + Alarm_ID, Toast.LENGTH_SHORT).show();
         }
     }
 
     public void setupRecycleView() {
-        ScheduleListAdapter adapter = new ScheduleListAdapter(mAppContext, null);
+
+        ScheduleListAdapter adapter = new ScheduleListAdapter(mAppContext, new ArrayList<ScheduleData>());
         RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.schedule_recycle_view);
 
         // improve performance if you know that changes in content

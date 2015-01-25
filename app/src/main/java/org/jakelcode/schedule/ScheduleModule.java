@@ -18,6 +18,7 @@ import io.realm.Realm;
 @Module(
       injects = {
               MainActivity.class,
+              EditActivity.class,
               SettingActivity.class,
 
               DailyCheckService.class
@@ -51,4 +52,9 @@ public class ScheduleModule {
     @Provides @Singleton Realm provideRealm() {
         return Realm.getInstance(application);
     }
+
+    @Provides @Singleton NotifyReceiver provideNotifyReceiver() {
+        return new NotifyReceiver();
+    }
+
 }

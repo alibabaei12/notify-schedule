@@ -15,7 +15,7 @@ public class Schedule extends RealmObject {
     private String description;
 
     private long startTerm;
-    private long sndTerm;
+    private long endTerm;
 
     private long startTimestamp;
     private long endTimestamp;
@@ -63,12 +63,12 @@ public class Schedule extends RealmObject {
         this.startTerm = startTerm;
     }
 
-    public long getSndTerm() {
-        return sndTerm;
+    public long getEndTerm() {
+        return endTerm;
     }
 
-    public void setSndTerm(long sndTerm) {
-        this.sndTerm = sndTerm;
+    public void setEndTerm(long endTerm) {
+        this.endTerm = endTerm;
     }
 
     public long getStartTimestamp() {

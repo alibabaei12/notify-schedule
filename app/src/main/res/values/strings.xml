@@ -9,4 +9,5 @@
 
     <string name="title_activity_main">Schedule</string>
     <string name="title_activity_setting">SettingActivity</string>
+    <string name="title_activity_edit">EditActivity</string>
 </resources>
