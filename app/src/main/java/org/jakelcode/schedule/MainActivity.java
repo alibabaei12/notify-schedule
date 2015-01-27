@@ -2,28 +2,14 @@ package org.jakelcode.schedule;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Paint;
-import android.graphics.Rect;
-import android.support.v4.util.TimeUtils;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.Layout;
-import android.text.StaticLayout;
-import android.text.TextPaint;
-import android.text.TextUtils;
-import android.text.format.DateUtils;
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.util.StringBuilderPrinter;
-import android.util.TypedValue;
-import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -33,29 +19,30 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.path.android.jobqueue.JobManager;
 
-import org.jakelcode.schedule.realm.Schedule;
+import org.jakelcode.schedule.event.ReceiveScheduleEvent;
+import org.jakelcode.schedule.job.LoadingScheduleJob;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.internal.ButterKnifeProcessor;
 import de.greenrobot.event.EventBus;
 import io.fabric.sdk.android.Fabric;
 import me.grantland.widget.AutofitHelper;
 
 
 public class MainActivity extends ActionBarActivity {
+    private static final String TAG = MainActivity.class.getName();
+
     @Inject EventBus mEventBus;
-    @Inject JobManager mJobManager;
     @Inject Context mAppContext;
     @Inject NotifyReceiver mNotifyReceiver;
+    @Inject JobManager mJobManager;
+
+    @InjectView(R.id.schedule_recycle_view) RecyclerView mRecyclerView;
 
     private int Alarm_ID = 0; // Just for debug purpose.
 
@@ -64,19 +51,34 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
 
         ScheduleApplication.inject(this);
-        ButterKnife.inject(this);
-
+        mEventBus.register(this);
 
         if (!BuildConfig.DEBUG)
             Fabric.with(this, new Crashlytics());
 
         setContentView(R.layout.activity_main);
+        ButterKnife.inject(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.include_toolbar);
         setSupportActionBar(toolbar);
         setupRecycleView();
+
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        // Look at Android Activity Life Cycle to understand why load in onStart
+        // Loading schedules from database
+        mJobManager.addJobInBackground(new LoadingScheduleJob(mAppContext));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mEventBus.unregister(this);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -125,8 +127,9 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void setupRecycleView() {
+        final List<ScheduleData> dataList = new ArrayList<>();
 
-        ScheduleListAdapter adapter = new ScheduleListAdapter(mAppContext, new ArrayList<ScheduleData>());
+        ScheduleListAdapter adapter = new ScheduleListAdapter(mAppContext, dataList);
         RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.schedule_recycle_view);
 
         // improve performance if you know that changes in content
@@ -139,6 +142,15 @@ public class MainActivity extends ActionBarActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         mRecyclerView.setAdapter(adapter);
+    }
+
+    public void onEventMainThread(ReceiveScheduleEvent d) {
+        ScheduleListAdapter adapter = new ScheduleListAdapter(mAppContext, d.getScheduleList());
+        if (mRecyclerView.getAdapter() != null) {
+            mRecyclerView.swapAdapter(adapter, true);
+        } else {
+            mRecyclerView.setAdapter(adapter);
+        }
     }
 
     final static class ScheduleViewHolder extends RecyclerView.ViewHolder {

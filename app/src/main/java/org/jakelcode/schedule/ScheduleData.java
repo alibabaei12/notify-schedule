@@ -1,11 +1,8 @@
 package org.jakelcode.schedule;
 
 import android.content.Context;
-import android.os.SystemClock;
 import android.text.format.DateUtils;
 
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -36,9 +33,10 @@ public class ScheduleData {
     */
     private long mDisableTimestamp = -1;
 
-    public ScheduleData(String title, String location, String desc,
+    public ScheduleData(long uniqueId, String title, String location, String desc,
                         long startTerm, long endTerm, long startTime, long endTime,
                         List<Integer> days) {
+        this.mUniqueId = uniqueId;
         this.mTitle = title;
         this.mLocation = location;
         this.mDescription = desc;
@@ -47,6 +45,10 @@ public class ScheduleData {
         this.mStartTimestamp = startTime;
         this.mEndTimestamp = endTime;
         this.mDays = days;
+
+        if (this.mUniqueId < 0) {
+            this.mUniqueId = System.nanoTime(); // for now? generateId();
+        }
     }
 
     public String getTitle() {

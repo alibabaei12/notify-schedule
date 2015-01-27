@@ -1,9 +1,10 @@
 package org.jakelcode.schedule;
 
-import android.app.AlarmManager;
 import android.content.Context;
 
 import com.path.android.jobqueue.JobManager;
+
+import org.jakelcode.schedule.job.LoadingScheduleJob;
 
 import javax.inject.Singleton;
 
@@ -21,6 +22,7 @@ import io.realm.Realm;
               EditActivity.class,
               SettingActivity.class,
 
+              LoadingScheduleJob.class,
               DailyCheckService.class
       }
 )

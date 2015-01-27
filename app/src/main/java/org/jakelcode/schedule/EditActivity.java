@@ -1,16 +1,27 @@
 package org.jakelcode.schedule;
 
-import android.support.v7.app.ActionBarActivity;
+import android.content.Context;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.Window;
+import android.widget.Toast;
+
+import org.jakelcode.schedule.realm.Schedule;
+
+import java.util.Calendar;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
+import io.realm.Realm;
 
 
 public class EditActivity extends ActionBarActivity {
+    private static final String TAG = EditActivity.class.getName();
+    @Inject Realm mRealm;
+    @Inject Context mAppContext;
 
     @Override
     protected void onStart() {
@@ -22,7 +33,6 @@ public class EditActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         ScheduleApplication.inject(this);
         ButterKnife.inject(this);
-
 
         setContentView(R.layout.activity_edit);
 
@@ -48,8 +58,16 @@ public class EditActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.action_confirm) {
+            if (validateData()) {
+                if (!saveData(true)) {
+                    Toast.makeText(mAppContext, "Failed to save data", Toast.LENGTH_LONG).show();
+                } else {
+                    finish();
+                }
+            } else {
+//                drawValidation();
+            }
         }
 
         return super.onOptionsItemSelected(item);
@@ -67,6 +85,29 @@ public class EditActivity extends ActionBarActivity {
     }
 
     public boolean saveData(boolean newData) {
+        //Feed fake data for now :)
+        Calendar cal = Calendar.getInstance();
+
+        cal.set(Calendar.HOUR, 5);
+        cal.set(Calendar.MINUTE, 45);
+        final long startTime = cal.getTimeInMillis();
+
+        cal.set(Calendar.HOUR, 8);
+        cal.set(Calendar.MINUTE, 20);
+        final long endTime = cal.getTimeInMillis();
+
+        mRealm.beginTransaction();
+            Schedule realmSchedule = mRealm.createObject(Schedule.class);
+            realmSchedule.setUniqueId(-1);
+            realmSchedule.setTitle("Title 1");
+            realmSchedule.setLocation("Location 1");
+            realmSchedule.setDescription("Short desc");
+            realmSchedule.setStartTerm(-1);
+            realmSchedule.setEndTerm(-1);
+            realmSchedule.setStartTimestamp(startTime);
+            realmSchedule.setEndTimestamp(endTime);
+        mRealm.commitTransaction();
+
         return true;
     }
 }

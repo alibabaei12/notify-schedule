@@ -5,7 +5,6 @@ import android.content.Context;
 import com.path.android.jobqueue.BaseJob;
 import com.path.android.jobqueue.config.Configuration;
 import com.path.android.jobqueue.di.DependencyInjector;
-import com.path.android.jobqueue.network.NetworkUtil;
 
 import org.jakelcode.schedule.ScheduleApplication;
 

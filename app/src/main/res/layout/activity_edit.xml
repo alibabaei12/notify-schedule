@@ -38,4 +38,44 @@
             app:primaryColor="?colorAccent"
             app:singleLineEllipsis="true" />
     </LinearLayout>
+
+    <LinearLayout android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_marginTop="232dp"
+        android:layout_marginStart="72dp"
+        android:layout_marginLeft="72dp"
+        >
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Time"
+            android:textSize="18sp"
+            android:layout_marginTop="@dimen/spacing_medium"
+            app:baseColor="@android:color/black"
+            app:floatingLabel="highlight"
+            app:primaryColor="?colorAccent"
+            app:singleLineEllipsis="true" />
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Location"
+            android:textSize="18sp"
+            app:baseColor="@android:color/black"
+            app:floatingLabel="highlight"
+            app:primaryColor="?colorAccent"
+            app:singleLineEllipsis="true" />
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Pictures"
+            android:textSize="18sp"
+            app:baseColor="@android:color/black"
+            app:floatingLabel="highlight"
+            app:primaryColor="?colorAccent"
+            app:singleLineEllipsis="true" />
+    </LinearLayout>
 </FrameLayout>
