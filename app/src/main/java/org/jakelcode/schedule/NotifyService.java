@@ -23,10 +23,10 @@ public class NotifyService extends IntentService {
         AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 
         if (dataString.contains("normal")) {
-            Log.i(TAG, "Received Ringer Normal from " + dataString);
+            Log.d(TAG, "Received Ringer Normal from " + dataString);
             am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
         } else if (dataString.contains("silent")) {
-            Log.i(TAG, "Received Ringer Silent from " + dataString);
+            Log.d(TAG, "Received Ringer Silent from " + dataString);
             am.setRingerMode(AudioManager.RINGER_MODE_SILENT);
         }
 

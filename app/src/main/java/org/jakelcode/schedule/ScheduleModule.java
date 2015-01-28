@@ -40,10 +40,6 @@ public class ScheduleModule {
         return application;
     }
 
-//    @Provides @Singleton AlarmManager provideAlarmManager() {
-//        return (AlarmManager) application.getSystemService(Context.ALARM_SERVICE);
-//    }
-
     @Provides @Singleton JobManager provideJobManager() {
         return new org.jakelcode.schedule.job.JobManager(application);
     }

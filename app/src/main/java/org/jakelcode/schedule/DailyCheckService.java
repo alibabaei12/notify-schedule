@@ -3,6 +3,7 @@ package org.jakelcode.schedule;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import org.jakelcode.schedule.realm.Schedule;
 
@@ -19,6 +20,7 @@ import io.realm.RealmResults;
  * @author Pin Khe "Jake" Loo (22 January, 2015)
  */
 public class DailyCheckService extends IntentService {
+    private static final String TAG = DailyCheckService.class.getName();
     @Inject Context mAppContext;
 
     public DailyCheckService() {
@@ -32,21 +34,21 @@ public class DailyCheckService extends IntentService {
 
         final Realm mRealm = Realm.getInstance(mAppContext);
         try {
+            Log.d(TAG, "DailyCheckService hits the ground!");
             final NotifyReceiver notifyReceiver = new NotifyReceiver();
             final Calendar calendar = Calendar.getInstance();
             final int curDay = calendar.get(Calendar.DAY_OF_WEEK);
 
             // Looking through database
             RealmResults<Schedule> realmResults = mRealm.where(Schedule.class)
-                    .greaterThan("startTimestamp", calendar.getTimeInMillis()) //Only look through the active ones
-                    .lessThan("endTimestamp", calendar.getTimeInMillis())
+                    .greaterThan("startTerm", calendar.getTimeInMillis()) //Only look through the active ones (in terms)
+                    .lessThan("endTerm", calendar.getTimeInMillis())
                     .findAll();
 
             for (Schedule s : realmResults) {
-                // If it is active today
-                if (s.getDays().where().equalTo("value", curDay).findFirst() != null) {
-                    //dataList.add(s);
+                if (s.getDays().where().equalTo("value", curDay).findFirst() != null) {                 // If it is active today
                     notifyReceiver.addAlarm(this, s.getUniqueId(), s.getStartTimestamp(), s.getEndTimestamp());
+                    Log.d(TAG, "Adding alarms : Id -> " + s.getUniqueId());
                 }
             }
 
@@ -56,5 +58,6 @@ public class DailyCheckService extends IntentService {
                 mRealm.close();
             }
         }
+        Log.d(TAG, "DailyCheckService just end the ruling.");
     }
 }

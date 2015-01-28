@@ -50,6 +50,7 @@ public class DailyCheckReceiver extends WakefulBroadcastReceiver {
         PendingIntent pendingIntent = PendingIntent.getService(c, 0, intent, 0);
 
         mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+        Log.d(TAG, "Daily Check Alarm is active!");
     }
 
     public void removeDailyAlarm(Context c) {
@@ -67,5 +68,6 @@ public class DailyCheckReceiver extends WakefulBroadcastReceiver {
         PendingIntent pendingIntent = PendingIntent.getService(c, 0, intent, 0);
 
         mAlarmManager.cancel(pendingIntent);
+        Log.d(TAG, "Daily Check Alarm is active!");
     }
 }
