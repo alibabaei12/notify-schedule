@@ -1,6 +1,7 @@
 package org.jakelcode.schedule;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import com.path.android.jobqueue.JobManager;
 
@@ -27,7 +28,7 @@ import io.realm.Realm;
       }
 )
 public class ScheduleModule {
-//    private final String PREFERENCE_NAME = "schedule";
+    private static final String PREFERENCE_NAME = "jsched";
 
     private final ScheduleApplication application;
 
@@ -59,4 +60,11 @@ public class ScheduleModule {
         return new NotifyReceiver();
     }
 
+    @Provides @Singleton SharedPreferences provideSharedPreferences() {
+        return application.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
+    }
+
+    @Provides @Singleton DailyCheckReceiver provideDailyCheckReceiver() {
+        return new DailyCheckReceiver();
+    }
 }

@@ -1,6 +1,7 @@
 package org.jakelcode.schedule;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -20,8 +21,13 @@ import io.realm.Realm;
 
 public class EditActivity extends ActionBarActivity {
     private static final String TAG = EditActivity.class.getName();
+
+    private static final String PREF_DAILY_CHECK = "daily-check";
+
+    @Inject SharedPreferences mPreferences;
     @Inject Realm mRealm;
     @Inject Context mAppContext;
+    @Inject DailyCheckReceiver mDailyCheckReceiver;
 
     @Override
     protected void onStart() {
@@ -32,9 +38,10 @@ public class EditActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ScheduleApplication.inject(this);
-        ButterKnife.inject(this);
 
         setContentView(R.layout.activity_edit);
+        ButterKnife.inject(this);
+
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.include_toolbar_long);
         setSupportActionBar(toolbar);
@@ -109,5 +116,24 @@ public class EditActivity extends ActionBarActivity {
         mRealm.commitTransaction();
 
         return true;
+    }
+
+    public void setDailyCheckService(boolean enable) {
+        // If preferences is disable and asking to disable = return or
+        // If preference is enable and asking to enable = return
+        if ((mPreferences.getBoolean(PREF_DAILY_CHECK, false)
+                && !enable) ||
+            (!mPreferences.getBoolean(PREF_DAILY_CHECK, false)
+                && enable)) {
+            return;
+        }
+
+        if (enable) {
+            mDailyCheckReceiver.setDailyAlarm(mAppContext);
+        } else {
+            mDailyCheckReceiver.removeDailyAlarm(mAppContext);
+        }
+
+        mPreferences.edit().putBoolean(PREF_DAILY_CHECK, enable).apply();
     }
 }

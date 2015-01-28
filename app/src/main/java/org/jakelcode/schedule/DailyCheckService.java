@@ -1,6 +1,7 @@
 package org.jakelcode.schedule;
 
 import android.app.IntentService;
+import android.content.Context;
 import android.content.Intent;
 
 import org.jakelcode.schedule.realm.Schedule;
@@ -18,7 +19,7 @@ import io.realm.RealmResults;
  * @author Pin Khe "Jake" Loo (22 January, 2015)
  */
 public class DailyCheckService extends IntentService {
-    @Inject Realm mRealm;
+    @Inject Context mAppContext;
 
     public DailyCheckService() {
         super("daily-check-service");
@@ -29,32 +30,31 @@ public class DailyCheckService extends IntentService {
         // Dependency Injection
         ScheduleApplication.inject(this);
 
-        final NotifyReceiver notifyReceiver = new NotifyReceiver();
-        final List<Schedule> dataList = new ArrayList<Schedule>();
-        final Calendar calendar = Calendar.getInstance();
-        final int curDay = calendar.get(Calendar.DAY_OF_WEEK);
+        final Realm mRealm = Realm.getInstance(mAppContext);
+        try {
+            final NotifyReceiver notifyReceiver = new NotifyReceiver();
+            final Calendar calendar = Calendar.getInstance();
+            final int curDay = calendar.get(Calendar.DAY_OF_WEEK);
 
-        // Looking through database
-        mRealm.beginTransaction();
-        RealmResults<Schedule> realmResult = mRealm.where(Schedule.class)
-                .greaterThan("startTimestamp", calendar.getTimeInMillis()) //Only look through the active ones
-                .lessThan("endTimestamp", calendar.getTimeInMillis())
-                .findAll();
+            // Looking through database
+            RealmResults<Schedule> realmResults = mRealm.where(Schedule.class)
+                    .greaterThan("startTimestamp", calendar.getTimeInMillis()) //Only look through the active ones
+                    .lessThan("endTimestamp", calendar.getTimeInMillis())
+                    .findAll();
 
-        while (realmResult.iterator().hasNext()) {
-            Schedule s = realmResult.iterator().next();
+            for (Schedule s : realmResults) {
+                // If it is active today
+                if (s.getDays().where().equalTo("value", curDay).findFirst() != null) {
+                    //dataList.add(s);
+                    notifyReceiver.addAlarm(this, s.getUniqueId(), s.getStartTimestamp(), s.getEndTimestamp());
+                }
+            }
 
-            // If it is active today
-            if (s.getDays().where().equalTo("value", curDay).findFirst() != null) {
-                dataList.add(s);
+            DailyCheckReceiver.completeWakefulIntent(intent);
+        } finally {
+            if (mRealm != null) {
+                mRealm.close();
             }
         }
-        mRealm.cancelTransaction();
-
-        for (Schedule data : dataList) {
-            notifyReceiver.addAlarm(this, data.getUniqueId(), data.getStartTimestamp(), data.getEndTimestamp());
-        }
-
-        DailyCheckReceiver.completeWakefulIntent(intent);
     }
 }
