@@ -3,20 +3,24 @@
       xmlns:tools="http://schemas.android.com/tools"
       tools:context=".MainActivity">
 
-    <item android:id="@+id/add_alarm"
-          android:title="Add Alarm"
+    <item
+        android:id="@+id/add_alarm"
+        android:title="Add Alarm"
         app:showAsAction="never"/>
 
-    <item android:id="@+id/remove_alarm"
-          android:title="Remove Alarm"
-          app:showAsAction="never"/>
+    <item
+        android:id="@+id/remove_alarm"
+        android:title="Remove Alarm"
+        app:showAsAction="never"/>
 
-    <item android:id="@+id/edit_activity"
+    <item
+        android:id="@+id/edit_activity"
         android:title="Edit Activity"
         app:showAsAction="never"/>
 
-    <item android:id="@+id/action_settings"
-          android:title="@string/action_settings"
-          android:orderInCategory="100"
-          app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_settings"
+        android:title="@string/action_settings"
+        android:orderInCategory="100"
+        app:showAsAction="never"/>
 </menu>

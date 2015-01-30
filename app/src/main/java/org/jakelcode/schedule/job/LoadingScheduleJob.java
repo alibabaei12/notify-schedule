@@ -5,12 +5,10 @@ import android.content.Context;
 import com.path.android.jobqueue.Job;
 import com.path.android.jobqueue.Params;
 
-import org.jakelcode.schedule.ScheduleData;
 import org.jakelcode.schedule.event.ReceiveScheduleEvent;
 import org.jakelcode.schedule.realm.Schedule;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -49,15 +47,10 @@ public class LoadingScheduleJob extends Job {
             RealmResults<Schedule> results = mRealm.where(Schedule.class).findAll();
 
             // Convert Schedule into POJO (ScheduleData) and pass it through eventBus
-            List<ScheduleData> dataList = new ArrayList<ScheduleData>();
-            ScheduleData scheduleData;
+            final List<Schedule> dataList = new ArrayList<>();
 
             for (Schedule schedule : results) {
-                scheduleData = new ScheduleData(schedule.getUniqueId(), schedule.getTitle(), schedule.getLocation(), schedule.getDescription(),
-                        schedule.getStartTerm(), schedule.getEndTerm(), schedule.getStartTimestamp(), schedule.getEndTimestamp(),
-                        convertToIntList(schedule.getDays()));
-
-                dataList.add(scheduleData);
+                dataList.add(schedule);
             }
 
             if (dataList.size() > 0) {
@@ -78,18 +71,5 @@ public class LoadingScheduleJob extends Job {
     @Override
     protected boolean shouldReRunOnThrowable(Throwable throwable) {
         return false;
-    }
-
-    private List<Integer> convertToIntList(String s) {
-        List<Integer> newList = new ArrayList<>();
-
-        s = s.substring(1, s.length() - 1); // discard '[' and ']'
-        String[] parts = s.split(",");
-
-        for (String single : parts) {
-            newList.add(Integer.parseInt(single.trim()));
-        }
-
-        return newList;
     }
 }

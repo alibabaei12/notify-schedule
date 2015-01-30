@@ -1,6 +1,6 @@
 package org.jakelcode.schedule.event;
 
-import org.jakelcode.schedule.ScheduleData;
+import org.jakelcode.schedule.realm.Schedule;
 
 import java.util.List;
 
@@ -8,13 +8,13 @@ import java.util.List;
  * @author Pin Khe "Jake" Loo (25 January, 2015)
  */
 public class ReceiveScheduleEvent {
-    private final List<ScheduleData> mScheduleList;
+    private final List<Schedule> mScheduleList;
 
-    public ReceiveScheduleEvent(List<ScheduleData> list) {
+    public ReceiveScheduleEvent(List<Schedule> list) {
         mScheduleList = list;
     }
 
-    public List<ScheduleData> getScheduleList() {
+    public List<Schedule> getScheduleList() {
         return mScheduleList;
     }
 }

@@ -30,7 +30,7 @@ public class NotifyReceiver extends WakefulBroadcastReceiver {
         }
         Intent mIntent = new Intent(context, NotifyReceiver.class);
 
-        mIntent.setData(Uri.parse("jsched://" + uniqueId + "/silent" ));
+        mIntent.setData(Uri.parse("jsched://" + uniqueId + "/silent"));
         PendingIntent pIntent = PendingIntent.getBroadcast(context, 0, mIntent, 0);
         mAlarmManager.set(AlarmManager.RTC_WAKEUP, startTimestamp, pIntent);
 
@@ -41,7 +41,7 @@ public class NotifyReceiver extends WakefulBroadcastReceiver {
 
     public void removeAlarm(Context context, long uniqueId) {
         if (mAlarmManager == null) {
-            mAlarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+            mAlarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         }
 
         Intent mIntent = new Intent(context, NotifyReceiver.class);

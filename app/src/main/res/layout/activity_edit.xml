@@ -17,6 +17,7 @@
         android:layout_marginLeft="72dp"
         android:layout_marginEnd="@dimen/activity_horizontal_margin"
         android:layout_marginRight="@dimen/activity_horizontal_margin">
+
         <com.rengwuxian.materialedittext.MaterialEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -26,7 +27,7 @@
             app:floatingLabel="highlight"
             app:maxCharacters="40"
             app:primaryColor="?colorAccent"
-            app:singleLineEllipsis="true" />
+            app:singleLineEllipsis="true"/>
 
         <com.rengwuxian.materialedittext.MaterialEditText
             android:layout_width="match_parent"
@@ -36,10 +37,11 @@
             app:baseColor="@android:color/white"
             app:floatingLabel="highlight"
             app:primaryColor="?colorAccent"
-            app:singleLineEllipsis="true" />
+            app:singleLineEllipsis="true"/>
     </LinearLayout>
 
-    <LinearLayout android:layout_height="wrap_content"
+    <LinearLayout
+        android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:orientation="vertical"
         android:layout_marginTop="232dp"
@@ -57,7 +59,7 @@
             app:baseColor="@android:color/black"
             app:floatingLabel="highlight"
             app:primaryColor="?colorAccent"
-            app:singleLineEllipsis="true" />
+            app:singleLineEllipsis="true"/>
 
         <com.rengwuxian.materialedittext.MaterialEditText
             android:layout_width="match_parent"
@@ -68,7 +70,7 @@
             app:baseColor="@android:color/black"
             app:floatingLabel="highlight"
             app:primaryColor="?colorAccent"
-            app:singleLineEllipsis="true" />
+            app:singleLineEllipsis="true"/>
 
         <com.rengwuxian.materialedittext.MaterialEditText
             android:layout_width="match_parent"
@@ -78,7 +80,7 @@
             app:baseColor="@android:color/black"
             app:floatingLabel="highlight"
             app:primaryColor="?colorAccent"
-            app:singleLineEllipsis="true" />
+            app:singleLineEllipsis="true"/>
 
         <com.rengwuxian.materialedittext.MaterialEditText
             android:layout_width="match_parent"
@@ -88,6 +90,6 @@
             app:baseColor="@android:color/black"
             app:floatingLabel="highlight"
             app:primaryColor="?colorAccent"
-            app:singleLineEllipsis="true" />
+            app:singleLineEllipsis="true"/>
     </LinearLayout>
 </FrameLayout>

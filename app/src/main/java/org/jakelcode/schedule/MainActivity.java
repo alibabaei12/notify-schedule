@@ -21,6 +21,7 @@ import com.path.android.jobqueue.JobManager;
 
 import org.jakelcode.schedule.event.ReceiveScheduleEvent;
 import org.jakelcode.schedule.job.LoadingScheduleJob;
+import org.jakelcode.schedule.realm.Schedule;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,8 +98,8 @@ public class MainActivity extends ActionBarActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
-        // FOR DEBUG PURPOSE.
-        // adding button to screen is ugly and 'more' work.
+            // FOR DEBUG PURPOSE.
+            // adding button to screen is ugly and 'more' work.
         } else if (id == R.id.add_alarm) {
             AlarmOperation(true);
             return true;
@@ -127,7 +128,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void setupRecycleView() {
-        final List<ScheduleData> dataList = new ArrayList<>();
+        final List<Schedule> dataList = new ArrayList<>();
 
         ScheduleListAdapter adapter = new ScheduleListAdapter(mAppContext, dataList);
         RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.schedule_recycle_view);
@@ -168,10 +169,10 @@ public class MainActivity extends ActionBarActivity {
     }
 
     final class ScheduleListAdapter extends RecyclerView.Adapter<ScheduleViewHolder> {
-        private final List<ScheduleData> mModelList;
+        private final List<Schedule> mModelList;
         private final Context mContext;
 
-        public ScheduleListAdapter(Context c, List<ScheduleData> models) {
+        public ScheduleListAdapter(Context c, List<Schedule> models) {
             mContext = c;
             mModelList = models;
         }
@@ -190,7 +191,7 @@ public class MainActivity extends ActionBarActivity {
         @Override
         public void onBindViewHolder(ScheduleViewHolder holder, int position) {
             //Set the information... modellist -> holder
-            ScheduleData model = mModelList.get(position);
+            Schedule model = mModelList.get(position);
 
             holder.image.setBackgroundColor(getResources().getColor(R.color.light_blue_900));
 
@@ -201,7 +202,8 @@ public class MainActivity extends ActionBarActivity {
 
             holder.description.setText(model.getDescription());
 
-            holder.time.setText(model.getStartTimeString(mContext) + " ~ " + model.getEndTimeString(mContext));
+            holder.time.setText(Utils.formatShowTime(mContext, model.getStartTimestamp()) + " ~ "
+                    + Utils.formatShowTime(mContext, model.getEndTimestamp()));
         }
 
         @Override

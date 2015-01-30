@@ -14,7 +14,7 @@ import javax.inject.Singleton;
  * @author Pin Khe "Jake" Loo (23 January, 2015)
  */
 @Singleton
-public class JobManager extends com.path.android.jobqueue.JobManager{
+public class JobManager extends com.path.android.jobqueue.JobManager {
     public JobManager(final Context context) {
         super(context, new Configuration.Builder(context)
                 .injector(new DependencyInjector() {

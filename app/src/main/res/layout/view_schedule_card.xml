@@ -9,11 +9,12 @@
                                     card_view:cardBackgroundColor="@android:color/white"
                                     card_view:cardCornerRadius="@dimen/spacing_small">
 
-    <ImageView android:id="@+id/schedule_card_image"
-               android:layout_width="@dimen/schedule_card_image_width"
-               android:layout_height="match_parent"
-               android:layout_gravity="start"
-               android:contentDescription="@string/hello_world"/>
+    <ImageView
+        android:id="@+id/schedule_card_image"
+        android:layout_width="@dimen/schedule_card_image_width"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:contentDescription="@string/hello_world"/>
 
     <LinearLayout
         android:layout_width="wrap_content"

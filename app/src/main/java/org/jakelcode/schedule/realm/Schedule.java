@@ -1,6 +1,5 @@
 package org.jakelcode.schedule.realm;
 
-import io.realm.RealmList;
 import io.realm.RealmObject;
 
 /**
@@ -19,6 +18,13 @@ public class Schedule extends RealmObject {
 
     private long startTimestamp;
     private long endTimestamp;
+
+    /**
+     * -1 = Event is active
+     * 0 = Event is permanently inactive
+     * Event is disabled until disableTimestamp is surpass
+     */
+    private long disableTimestamp;
 
     // Require to use Realm Integer because RealmList doesn't accept Integer
     private String days;

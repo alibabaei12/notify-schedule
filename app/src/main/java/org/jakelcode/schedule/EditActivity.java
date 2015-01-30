@@ -12,7 +12,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.rengwuxian.materialedittext.MaterialEditText;
@@ -84,6 +83,8 @@ public class EditActivity extends ActionBarActivity {
             } else {
 //                drawValidation();
             }
+        } else if (id == R.id.action_delete) {
+
         }
 
         return super.onOptionsItemSelected(item);
@@ -113,7 +114,7 @@ public class EditActivity extends ActionBarActivity {
         final long endTime = cal.getTimeInMillis();
 
         mRealm.beginTransaction();
-            Schedule realmSchedule = mRealm.createObject(Schedule.class);
+        Schedule realmSchedule = mRealm.createObject(Schedule.class);
             realmSchedule.setUniqueId(-1);
             realmSchedule.setTitle("Title 1");
             realmSchedule.setLocation("Location 1");

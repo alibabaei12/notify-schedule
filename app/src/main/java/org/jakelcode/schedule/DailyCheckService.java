@@ -7,9 +7,7 @@ import android.util.Log;
 
 import org.jakelcode.schedule.realm.Schedule;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -42,8 +40,8 @@ public class DailyCheckService extends IntentService {
             // Looking through database
             RealmResults<Schedule> realmResults = mRealm.where(Schedule.class)
                     .beginGroup()
-                        .greaterThan("startTerm", calendar.getTimeInMillis()) //Only look through the active ones (in terms)
-                        .lessThan("endTerm", calendar.getTimeInMillis())
+                    .greaterThan("startTerm", calendar.getTimeInMillis()) //Only look through the active ones (in terms)
+                    .lessThan("endTerm", calendar.getTimeInMillis())
                     .endGroup()
                     .or()
                     .equalTo("startTerm", -1)

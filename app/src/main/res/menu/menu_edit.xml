@@ -3,13 +3,15 @@
       xmlns:tools="http://schemas.android.com/tools"
       tools:context="org.jakelcode.schedule.EditActivity">
 
-    <item android:id="@+id/action_delete"
-          android:icon="@drawable/abc_ic_menu_cut_mtrl_alpha"
+    <item
+        android:id="@+id/action_delete"
+        android:icon="@drawable/abc_ic_menu_cut_mtrl_alpha"
         android:title="Delete"
         app:showAsAction="ifRoom"/>
 
-    <item android:id="@+id/action_confirm"
-          android:icon="@drawable/abc_ic_commit_search_api_mtrl_alpha"
-          android:title="@string/action_confirm"
-          app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/action_confirm"
+        android:icon="@drawable/abc_ic_commit_search_api_mtrl_alpha"
+        android:title="@string/action_confirm"
+        app:showAsAction="ifRoom"/>
 </menu>

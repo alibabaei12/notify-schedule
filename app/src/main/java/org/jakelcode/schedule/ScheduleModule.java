@@ -18,14 +18,14 @@ import io.realm.Realm;
  * @author Pin Khe "Jake" Loo (11 January, 2015)
  */
 @Module(
-      injects = {
-              MainActivity.class,
-              EditActivity.class,
-              SettingActivity.class,
+        injects = {
+                MainActivity.class,
+                EditActivity.class,
+                SettingActivity.class,
 
-              LoadingScheduleJob.class,
-              DailyCheckService.class
-      }
+                LoadingScheduleJob.class,
+                DailyCheckService.class
+        }
 )
 public class ScheduleModule {
     private static final String PREFERENCE_NAME = "jsched";
@@ -36,31 +36,45 @@ public class ScheduleModule {
         application = a;
     }
 
-    @Provides @Singleton Context provideContext() {
+    @Provides
+    @Singleton
+    Context provideContext() {
         return application;
     }
 
-    @Provides @Singleton JobManager provideJobManager() {
+    @Provides
+    @Singleton
+    JobManager provideJobManager() {
         return new org.jakelcode.schedule.job.JobManager(application);
     }
 
-    @Provides @Singleton EventBus provideEventBus() {
+    @Provides
+    @Singleton
+    EventBus provideEventBus() {
         return EventBus.getDefault();
     }
 
-    @Provides @Singleton Realm provideRealm() {
+    @Provides
+    @Singleton
+    Realm provideRealm() {
         return Realm.getInstance(application);
     }
 
-    @Provides @Singleton NotifyReceiver provideNotifyReceiver() {
+    @Provides
+    @Singleton
+    NotifyReceiver provideNotifyReceiver() {
         return new NotifyReceiver();
     }
 
-    @Provides @Singleton SharedPreferences provideSharedPreferences() {
+    @Provides
+    @Singleton
+    SharedPreferences provideSharedPreferences() {
         return application.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
     }
 
-    @Provides @Singleton DailyCheckReceiver provideDailyCheckReceiver() {
+    @Provides
+    @Singleton
+    DailyCheckReceiver provideDailyCheckReceiver() {
         return new DailyCheckReceiver();
     }
 }
