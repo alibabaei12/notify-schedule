@@ -100,4 +100,12 @@ public class Schedule extends RealmObject {
     public void setDays(String days) {
         this.days = days;
     }
+
+    public long getDisableTimestamp() {
+        return disableTimestamp;
+    }
+
+    public void setDisableTimestamp(long disableTimestamp) {
+        this.disableTimestamp = disableTimestamp;
+    }
 }
