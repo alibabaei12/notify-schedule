@@ -41,12 +41,16 @@ public class DailyCheckService extends IntentService {
 
             // Looking through database
             RealmResults<Schedule> realmResults = mRealm.where(Schedule.class)
-                    .greaterThan("startTerm", calendar.getTimeInMillis()) //Only look through the active ones (in terms)
-                    .lessThan("endTerm", calendar.getTimeInMillis())
+                    .beginGroup()
+                        .greaterThan("startTerm", calendar.getTimeInMillis()) //Only look through the active ones (in terms)
+                        .lessThan("endTerm", calendar.getTimeInMillis())
+                    .endGroup()
+                    .or()
+                    .equalTo("startTerm", -1)
                     .findAll();
 
             for (Schedule s : realmResults) {
-                if (s.getDays().where().equalTo("value", curDay).findFirst() != null) {                 // If it is active today
+                if (s.getDays().contains(Integer.toString(curDay)) || s.getDays().equals("-1")) { // If it is active today
                     notifyReceiver.addAlarm(this, s.getUniqueId(), s.getStartTimestamp(), s.getEndTimestamp());
                     Log.d(TAG, "Adding alarms : Id -> " + s.getUniqueId());
                 }

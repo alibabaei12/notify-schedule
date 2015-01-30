@@ -7,10 +7,10 @@ import com.path.android.jobqueue.Params;
 
 import org.jakelcode.schedule.ScheduleData;
 import org.jakelcode.schedule.event.ReceiveScheduleEvent;
-import org.jakelcode.schedule.realm.RealmInt;
 import org.jakelcode.schedule.realm.Schedule;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -80,12 +80,16 @@ public class LoadingScheduleJob extends Job {
         return false;
     }
 
-    public List<Integer> convertToIntList(List<RealmInt> list) {
-        List<Integer> newList = new ArrayList<>(list.size());
+    private List<Integer> convertToIntList(String s) {
+        List<Integer> newList = new ArrayList<>();
 
-        for (RealmInt ri : list) {
-            newList.add(ri.getValue());
+        s = s.substring(1, s.length() - 1); // discard '[' and ']'
+        String[] parts = s.split(",");
+
+        for (String single : parts) {
+            newList.add(Integer.parseInt(single.trim()));
         }
+
         return newList;
     }
 }

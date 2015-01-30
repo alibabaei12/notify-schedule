@@ -68,6 +68,6 @@ public class DailyCheckReceiver extends WakefulBroadcastReceiver {
         PendingIntent pendingIntent = PendingIntent.getService(c, 0, intent, 0);
 
         mAlarmManager.cancel(pendingIntent);
-        Log.d(TAG, "Daily Check Alarm is active!");
+        Log.d(TAG, "Daily Check Alarm is removed!");
     }
 }

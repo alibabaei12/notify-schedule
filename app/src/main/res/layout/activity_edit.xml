@@ -48,9 +48,21 @@
         >
 
         <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/edit_time_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Time"
+            android:textSize="18sp"
+            android:layout_marginTop="@dimen/spacing_medium"
+            app:baseColor="@android:color/black"
+            app:floatingLabel="highlight"
+            app:primaryColor="?colorAccent"
+            app:singleLineEllipsis="true" />
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Term"
             android:textSize="18sp"
             android:layout_marginTop="@dimen/spacing_medium"
             app:baseColor="@android:color/black"

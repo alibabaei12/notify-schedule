@@ -21,7 +21,7 @@ public class Schedule extends RealmObject {
     private long endTimestamp;
 
     // Require to use Realm Integer because RealmList doesn't accept Integer
-    private RealmList<RealmInt> days;
+    private String days;
 
     public long getUniqueId() {
         return uniqueId;
@@ -87,11 +87,11 @@ public class Schedule extends RealmObject {
         this.endTimestamp = endTimestamp;
     }
 
-    public RealmList<RealmInt> getDays() {
+    public String getDays() {
         return days;
     }
 
-    public void setDays(RealmList<RealmInt> days) {
+    public void setDays(String days) {
         this.days = days;
     }
 }
