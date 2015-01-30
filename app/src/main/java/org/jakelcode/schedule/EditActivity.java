@@ -124,6 +124,7 @@ public class EditActivity extends ActionBarActivity {
             realmSchedule.setEndTerm(-1);
             realmSchedule.setStartTimestamp(startTime);
             realmSchedule.setEndTimestamp(endTime);
+            realmSchedule.setDisableTimestamp(-1);
             realmSchedule.setDays("-1");
         mRealm.commitTransaction();
 
@@ -154,7 +155,6 @@ public class EditActivity extends ActionBarActivity {
         newFragment.setListener(new DatePickerFragment.Listener() {
             @Override
             public void onDateReceive(int year, int month, int day) {
-                //MaterialEditText editText = (MaterialEditText) findViewById(R.id.edit_time_text);
                 ((MaterialEditText) v).setText(year + " / " + (month + 1) + " / " + day);
             }
         });
