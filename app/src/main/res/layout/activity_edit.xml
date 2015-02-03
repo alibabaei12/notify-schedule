@@ -40,6 +40,8 @@
             app:singleLineEllipsis="true"/>
     </LinearLayout>
 
+    <!-- Below toolbar-->
+
     <LinearLayout
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
@@ -51,34 +53,80 @@
         android:layout_marginRight="@dimen/activity_horizontal_margin"
         >
 
-        <com.rengwuxian.materialedittext.MaterialEditText
-            android:id="@+id/edit_time_text"
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Time"
-            android:textSize="18sp"
             android:layout_marginTop="@dimen/spacing_medium"
-            android:focusable="false"
-            app:baseColor="@android:color/black"
-            app:floatingLabel="highlight"
-            app:primaryColor="?colorAccent"/>
+            >
 
-        <com.rengwuxian.materialedittext.MaterialEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Term"
-            android:textSize="18sp"
-            android:layout_marginTop="@dimen/spacing_medium"
-            android:focusable="false"
-            app:baseColor="@android:color/black"
-            app:floatingLabel="highlight"
-            app:primaryColor="?colorAccent"/>
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/edit_time_start_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Start Time"
+                android:textSize="18sp"
+                android:layout_weight="0.5"
+                app:baseColor="@android:color/black"
+                app:floatingLabel="highlight"
+                app:primaryColor="?colorAccent"
+                android:focusable="false"
+                />
+
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/edit_time_end_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="End Time"
+                android:textSize="18sp"
+                android:layout_weight="0.5"
+                app:baseColor="@android:color/black"
+                app:floatingLabel="highlight"
+                app:primaryColor="?colorAccent"
+                android:focusable="false"
+                />
+
+        </LinearLayout>
 
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_medium"
+            >
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/edit_term_start_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Start Term"
+                android:textSize="18sp"
+                android:layout_weight="0.5"
+                app:baseColor="@android:color/black"
+                app:floatingLabel="highlight"
+                app:primaryColor="?colorAccent"
+                android:focusable="false"
+                />
 
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/edit_term_end_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="End Term"
+                android:textSize="18sp"
+                android:layout_weight="0.5"
+                app:baseColor="@android:color/black"
+                app:floatingLabel="highlight"
+                app:primaryColor="?colorAccent"
+                android:focusable="false"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_medium"
+            >
             <org.jakelcode.schedule.ui.CheckableButton
                 android:id="@+id/edit_days_sun"
                 android:layout_width="@dimen/button_width_small"
@@ -140,14 +188,15 @@
             app:primaryColor="?colorAccent"
             app:singleLineEllipsis="true"/>
 
-        <com.rengwuxian.materialedittext.MaterialEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Pictures"
-            android:textSize="18sp"
-            app:baseColor="@android:color/black"
-            app:floatingLabel="highlight"
-            app:primaryColor="?colorAccent"
-            app:singleLineEllipsis="true"/>
+        <!--<com.rengwuxian.materialedittext.MaterialEditText-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:hint="Pictures"-->
+            <!--android:textSize="18sp"-->
+            <!--app:baseColor="@android:color/black"-->
+            <!--app:floatingLabel="highlight"-->
+            <!--app:primaryColor="?colorAccent"-->
+            <!--app:singleLineEllipsis="true"/>-->
+        <!---->
     </LinearLayout>
 </FrameLayout>

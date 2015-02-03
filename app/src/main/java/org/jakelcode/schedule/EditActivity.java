@@ -2,6 +2,7 @@ package org.jakelcode.schedule;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.rengwuxian.materialedittext.MaterialEditText;
@@ -149,13 +151,33 @@ public class EditActivity extends ActionBarActivity {
         mPreferences.edit().putBoolean(PREF_DAILY_CHECK, enable).apply();
     }
 
-    @OnClick(R.id.edit_time_text)
+    @OnClick({R.id.edit_time_start_text, R.id.edit_time_end_text})
+    public void promptClock(final View v) {
+        TimePickerFragment newFragment = new TimePickerFragment();
+        newFragment.setListener(new TimePickerFragment.Listener() {
+            @Override
+            public void onTimeReceive(int hour_of_day, int minutes) {
+                ((MaterialEditText) v).setText(hour_of_day + " : " + minutes);
+
+                if (v.getId() == R.id.edit_time_start_text) {
+                    findViewById(R.id.edit_time_end_text).performClick();
+                }
+            }
+        });
+        newFragment.show(getSupportFragmentManager(), "time_picker");
+    }
+
+    @OnClick({R.id.edit_term_start_text, R.id.edit_term_end_text})
     public void promptCalendar(final View v) {
         DatePickerFragment newFragment = new DatePickerFragment();
         newFragment.setListener(new DatePickerFragment.Listener() {
             @Override
             public void onDateReceive(int year, int month, int day) {
                 ((MaterialEditText) v).setText(year + " / " + (month + 1) + " / " + day);
+
+                if (v.getId() == R.id.edit_term_start_text) {
+                    findViewById(R.id.edit_term_end_text).performClick();
+                }
             }
         });
         newFragment.show(getSupportFragmentManager(), "date_picker");
@@ -180,7 +202,6 @@ public class EditActivity extends ActionBarActivity {
 
         @Override
         public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-            // Call on a function that set the UIs date display.
             listener.onDateReceive(year, month, day);
         }
 
@@ -193,4 +214,32 @@ public class EditActivity extends ActionBarActivity {
         }
     }
 
+
+    public static final class TimePickerFragment extends DialogFragment
+            implements TimePickerDialog.OnTimeSetListener {
+        private Listener listener;
+
+        @Override @NonNull
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the current date as the default date in the picker
+            final Calendar c = Calendar.getInstance();
+            int hour_of_day = c.get(Calendar.HOUR_OF_DAY);
+            int minute = c.get(Calendar.MINUTE);
+
+            return new TimePickerDialog(getActivity(), this, hour_of_day, minute, false);
+        }
+
+        @Override
+        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+            listener.onTimeReceive(hourOfDay, minute);
+        }
+
+        public void setListener(Listener l) {
+            listener = l;
+        }
+
+        interface Listener {
+            void onTimeReceive(int hourOfDay, int minute);
+        }
+    }
 }
