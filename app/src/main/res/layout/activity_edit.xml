@@ -53,11 +53,13 @@
         android:layout_marginRight="@dimen/activity_horizontal_margin"
         >
 
+        <!-- Layout for start / end time -->
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_medium"
+            android:weightSum="2"
             >
 
             <com.rengwuxian.materialedittext.MaterialEditText
@@ -66,7 +68,7 @@
                 android:layout_height="wrap_content"
                 android:hint="Start Time"
                 android:textSize="18sp"
-                android:layout_weight="0.5"
+                android:layout_weight="1"
                 app:baseColor="@android:color/black"
                 app:floatingLabel="highlight"
                 app:primaryColor="?colorAccent"
@@ -79,7 +81,7 @@
                 android:layout_height="wrap_content"
                 android:hint="End Time"
                 android:textSize="18sp"
-                android:layout_weight="0.5"
+                android:layout_weight="1"
                 app:baseColor="@android:color/black"
                 app:floatingLabel="highlight"
                 app:primaryColor="?colorAccent"
@@ -88,11 +90,13 @@
 
         </LinearLayout>
 
+        <!-- layout for start / end term -->
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_medium"
+            android:weightSum="2"
             >
             <com.rengwuxian.materialedittext.MaterialEditText
                 android:id="@+id/edit_term_start_text"
@@ -100,7 +104,7 @@
                 android:layout_height="wrap_content"
                 android:hint="Start Term"
                 android:textSize="18sp"
-                android:layout_weight="0.5"
+                android:layout_weight="1"
                 app:baseColor="@android:color/black"
                 app:floatingLabel="highlight"
                 app:primaryColor="?colorAccent"
@@ -113,7 +117,7 @@
                 android:layout_height="wrap_content"
                 android:hint="End Term"
                 android:textSize="18sp"
-                android:layout_weight="0.5"
+                android:layout_weight="1"
                 app:baseColor="@android:color/black"
                 app:floatingLabel="highlight"
                 app:primaryColor="?colorAccent"
@@ -121,11 +125,13 @@
                 />
         </LinearLayout>
 
+        <!-- Layout for repeating days -->
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_medium"
+            android:weightSum="7"
             >
             <org.jakelcode.schedule.ui.CheckableButton
                 android:id="@+id/edit_days_sun"
@@ -133,49 +139,56 @@
                 android:layout_height="wrap_content"
                 android:text="S"
                 android:textSize="@dimen/text_size_small"
-                android:background="@drawable/edit_day_button"/>
+                android:background="@drawable/edit_day_button"
+                android:layout_weight="1"/>
             <org.jakelcode.schedule.ui.CheckableButton
                 android:id="@+id/edit_days_m"
                 android:layout_width="@dimen/button_width_small"
                 android:layout_height="wrap_content"
                 android:text="M"
                 android:textSize="@dimen/text_size_small"
-                android:background="@drawable/edit_day_button"/>
+                android:background="@drawable/edit_day_button"
+                android:layout_weight="1"/>
             <org.jakelcode.schedule.ui.CheckableButton
                 android:id="@+id/edit_days_t"
                 android:layout_width="@dimen/button_width_small"
                 android:layout_height="wrap_content"
                 android:text="T"
                 android:textSize="@dimen/text_size_small"
-                android:background="@drawable/edit_day_button"/>
+                android:background="@drawable/edit_day_button"
+                android:layout_weight="1"/>
             <org.jakelcode.schedule.ui.CheckableButton
                 android:id="@+id/edit_days_w"
                 android:layout_width="@dimen/button_width_small"
                 android:layout_height="wrap_content"
                 android:text="W"
                 android:textSize="@dimen/text_size_small"
-                android:background="@drawable/edit_day_button"/>
+                android:background="@drawable/edit_day_button"
+                android:layout_weight="1"/>
             <org.jakelcode.schedule.ui.CheckableButton
                 android:id="@+id/edit_days_th"
                 android:layout_width="@dimen/button_width_small"
                 android:layout_height="wrap_content"
                 android:text="Th"
                 android:textSize="@dimen/text_size_small"
-                android:background="@drawable/edit_day_button"/>
+                android:background="@drawable/edit_day_button"
+                android:layout_weight="1"/>
             <org.jakelcode.schedule.ui.CheckableButton
                 android:id="@+id/edit_days_f"
                 android:layout_width="@dimen/button_width_small"
                 android:layout_height="wrap_content"
                 android:text="F"
                 android:textSize="@dimen/text_size_small"
-                android:background="@drawable/edit_day_button"/>
+                android:background="@drawable/edit_day_button"
+                android:layout_weight="1"/>
             <org.jakelcode.schedule.ui.CheckableButton
                 android:id="@+id/edit_days_sat"
                 android:layout_width="@dimen/button_width_small"
                 android:layout_height="wrap_content"
                 android:text="S"
                 android:textSize="@dimen/text_size_small"
-                android:background="@drawable/edit_day_button"/>
+                android:background="@drawable/edit_day_button"
+                android:layout_weight="1"/>
         </LinearLayout>
 
         <com.rengwuxian.materialedittext.MaterialEditText

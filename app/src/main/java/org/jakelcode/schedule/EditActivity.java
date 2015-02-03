@@ -157,7 +157,7 @@ public class EditActivity extends ActionBarActivity {
         newFragment.setListener(new TimePickerFragment.Listener() {
             @Override
             public void onTimeReceive(int hour_of_day, int minutes) {
-                ((MaterialEditText) v).setText(hour_of_day + " : " + minutes);
+                ((MaterialEditText) v).setText(Utils.formatShowTime(mAppContext, hour_of_day, minutes));
 
                 if (v.getId() == R.id.edit_time_start_text) {
                     findViewById(R.id.edit_time_end_text).performClick();
@@ -173,7 +173,7 @@ public class EditActivity extends ActionBarActivity {
         newFragment.setListener(new DatePickerFragment.Listener() {
             @Override
             public void onDateReceive(int year, int month, int day) {
-                ((MaterialEditText) v).setText(year + " / " + (month + 1) + " / " + day);
+                ((MaterialEditText) v).setText(Utils.formatShowDate(mAppContext, year, month, day));
 
                 if (v.getId() == R.id.edit_term_start_text) {
                     findViewById(R.id.edit_term_end_text).performClick();
