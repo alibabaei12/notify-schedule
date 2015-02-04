@@ -45,6 +45,9 @@ public class LoadingScheduleJob extends Job {
 
             // Loading Schedule from database
             RealmResults<Schedule> results = mRealm.where(Schedule.class).findAll();
+            // Sort it descending, so the latest ones will be displayed on top
+            // Also it is easier to obtain the last uniqueId exists in the database
+            results.sort("uniqueId", RealmResults.SORT_ORDER_DESCENDING);
 
             // Convert Schedule into POJO (ScheduleData) and pass it through eventBus
             final List<Schedule> dataList = new ArrayList<>();

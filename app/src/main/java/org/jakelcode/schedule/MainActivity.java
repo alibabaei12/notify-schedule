@@ -12,9 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.path.android.jobqueue.JobManager;
@@ -100,31 +98,12 @@ public class MainActivity extends ActionBarActivity {
             return true;
             // FOR DEBUG PURPOSE.
             // adding button to screen is ugly and 'more' work.
-        } else if (id == R.id.add_alarm) {
-            AlarmOperation(true);
-            return true;
-        } else if (id == R.id.remove_alarm) {
-            AlarmOperation(false);
-            return true;
-        } else if (id == R.id.edit_activity) {
+        } if (id == R.id.edit_activity) {
             startActivity(new Intent(mAppContext, EditActivity.class));
             return true;
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    // FOR DEBUG PURPOSE.
-    // A test for receiver.addAlarm and receiver.removeAlarm
-    public void AlarmOperation(boolean mode) {
-        if (mode) { // adding
-            Alarm_ID++;
-            mNotifyReceiver.addAlarm(getApplicationContext(), Alarm_ID, 0, 0);
-            Toast.makeText(getApplicationContext(), "Alarm Added : " + Alarm_ID, Toast.LENGTH_SHORT).show();
-        } else {
-            mNotifyReceiver.removeAlarm(getApplicationContext(), Alarm_ID);
-            Toast.makeText(getApplicationContext(), "Alarm Removed : " + Alarm_ID, Toast.LENGTH_SHORT).show();
-        }
     }
 
     public void setupRecycleView() {
@@ -146,6 +125,10 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void onEventMainThread(ReceiveScheduleEvent d) {
+        // Initialize the unique identifier
+        // The value that is being set is the largest value in the database
+        ScheduleUID.set(d.getScheduleList().get(0).getUniqueId());
+
         ScheduleListAdapter adapter = new ScheduleListAdapter(mAppContext, d.getScheduleList());
         if (mRecyclerView.getAdapter() != null) {
             mRecyclerView.swapAdapter(adapter, true);
@@ -155,7 +138,6 @@ public class MainActivity extends ActionBarActivity {
     }
 
     final static class ScheduleViewHolder extends RecyclerView.ViewHolder {
-        @InjectView(R.id.schedule_card_image) ImageView image;
         @InjectView(R.id.schedule_card_title) TextView title;
         @InjectView(R.id.schedule_card_location) TextView location;
         @InjectView(R.id.schedule_card_desc) TextView description;
@@ -192,8 +174,6 @@ public class MainActivity extends ActionBarActivity {
         public void onBindViewHolder(ScheduleViewHolder holder, int position) {
             //Set the information... modellist -> holder
             Schedule model = mModelList.get(position);
-
-            holder.image.setBackgroundColor(getResources().getColor(R.color.light_blue_900));
 
             holder.title.setText(model.getTitle());
             AutofitHelper.create(holder.title).setMaxLines(2); // Fitting a bunch of text into 2 lines

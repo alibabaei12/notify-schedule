@@ -19,6 +19,7 @@
         android:layout_marginRight="@dimen/activity_horizontal_margin">
 
         <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/edit_title_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Title"
@@ -30,6 +31,7 @@
             app:singleLineEllipsis="true"/>
 
         <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/edit_description_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Description"
@@ -192,6 +194,7 @@
         </LinearLayout>
 
         <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/edit_location_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Location"

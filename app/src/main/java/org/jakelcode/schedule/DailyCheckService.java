@@ -40,11 +40,11 @@ public class DailyCheckService extends IntentService {
             // Looking through database
             RealmResults<Schedule> realmResults = mRealm.where(Schedule.class)
                     .beginGroup()
-                    .greaterThan("startTerm", calendar.getTimeInMillis()) //Only look through the active ones (in terms)
-                    .lessThan("endTerm", calendar.getTimeInMillis())
+                        .greaterThan("startTerm", calendar.getTimeInMillis()) //Only look through the active ones (in terms)
+                        .lessThan("endTerm", calendar.getTimeInMillis())
                     .endGroup()
                     .or()
-                    .equalTo("startTerm", -1)
+                        .equalTo("startTerm", -1)
                     .findAll();
 
             for (Schedule s : realmResults) {

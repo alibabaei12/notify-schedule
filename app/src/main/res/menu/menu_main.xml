@@ -4,16 +4,6 @@
       tools:context=".MainActivity">
 
     <item
-        android:id="@+id/add_alarm"
-        android:title="Add Alarm"
-        app:showAsAction="never"/>
-
-    <item
-        android:id="@+id/remove_alarm"
-        android:title="Remove Alarm"
-        app:showAsAction="never"/>
-
-    <item
         android:id="@+id/edit_activity"
         android:title="Edit Activity"
         app:showAsAction="never"/>
