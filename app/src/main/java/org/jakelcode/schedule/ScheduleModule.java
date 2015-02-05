@@ -56,25 +56,8 @@ public class ScheduleModule {
 
     @Provides
     @Singleton
-    Realm provideRealm() {
-        return Realm.getInstance(application);
-    }
-
-    @Provides
-    @Singleton
-    NotifyReceiver provideNotifyReceiver() {
-        return new NotifyReceiver();
-    }
-
-    @Provides
-    @Singleton
     SharedPreferences provideSharedPreferences() {
         return application.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
     }
 
-    @Provides
-    @Singleton
-    DailyCheckReceiver provideDailyCheckReceiver() {
-        return new DailyCheckReceiver();
-    }
 }

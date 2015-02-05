@@ -20,12 +20,14 @@ import android.widget.Toast;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import org.jakelcode.schedule.realm.Schedule;
+import org.jakelcode.schedule.ui.CheckableButton;
 
 import java.util.Calendar;
 
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
+import butterknife.InjectView;
 import butterknife.OnClick;
 import io.realm.Realm;
 
@@ -33,12 +35,32 @@ import io.realm.Realm;
 public class EditActivity extends ActionBarActivity {
     private static final String TAG = EditActivity.class.getName();
 
-    private static final String PREF_DAILY_CHECK = "daily-check";
-
-    @Inject SharedPreferences mPreferences;
-    @Inject Realm mRealm;
+    private Realm mRealm;
     @Inject Context mAppContext;
-    @Inject DailyCheckReceiver mDailyCheckReceiver;
+
+    @InjectView(R.id.edit_title_text) MaterialEditText mTitleText;
+    @InjectView(R.id.edit_description_text) MaterialEditText mDescriptionText;
+    @InjectView(R.id.edit_time_start_text) MaterialEditText mStartTimeText;
+    @InjectView(R.id.edit_time_end_text) MaterialEditText mEndTimeText;
+    @InjectView(R.id.edit_term_start_text) MaterialEditText mStartTermText;
+    @InjectView(R.id.edit_term_end_text) MaterialEditText mEndTermText;
+    @InjectView(R.id.edit_location_text) MaterialEditText mLocationText;
+
+    @InjectView(R.id.edit_days_sun) CheckableButton mRepeatSun;
+    @InjectView(R.id.edit_days_m) CheckableButton mRepeatMon;
+    @InjectView(R.id.edit_days_t) CheckableButton mRepeatTues;
+    @InjectView(R.id.edit_days_w) CheckableButton mRepeatWed;
+    @InjectView(R.id.edit_days_th) CheckableButton mRepeatThurs;
+    @InjectView(R.id.edit_days_f) CheckableButton mRepeatFri;
+    @InjectView(R.id.edit_days_sat) CheckableButton mRepeatSat;
+
+    private long mStartTerm = -1;
+    private long mEndTerm = -1;
+
+    private int mStartHour = -1;
+    private int mStartMinute = -1;
+    private int mEndHour = -1;
+    private int mEndMinute = -1;
 
     @Override
     protected void onStart() {
@@ -53,6 +75,7 @@ public class EditActivity extends ActionBarActivity {
         setContentView(R.layout.activity_edit);
         ButterKnife.inject(this);
 
+        mRealm = Realm.getInstance(mAppContext);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.include_toolbar_long);
         setSupportActionBar(toolbar);
@@ -60,6 +83,11 @@ public class EditActivity extends ActionBarActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mRealm.close();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -83,8 +111,6 @@ public class EditActivity extends ActionBarActivity {
                 } else {
                     finish();
                 }
-            } else {
-//                drawValidation();
             }
         } else if (id == R.id.action_delete) {
 
@@ -101,54 +127,84 @@ public class EditActivity extends ActionBarActivity {
     }
 
     public boolean validateData() {
+        if (mTitleText.getText().length() < 1 || mTitleText.getText().length() > 40) {
+            mTitleText.setError("Title must be 1~40 characters");
+            return false;
+        } else if (mStartTerm != -1 && mEndTerm == -1) {
+            mStartTermText.setError("End term is required");
+            return false;
+        } else if (mStartTerm == -1 && mEndTerm != -1) {
+            mEndTermText.setError("Start term is required");
+            return false;
+        } else if (mStartHour != -1 && mEndHour == -1) {
+            mStartTimeText.setError("End time is required");
+            return false;
+        } else if (mStartHour == -1 && mEndHour != -1) {
+            mEndTimeText.setError("Start time is required");
+            return false;
+        } else if (mStartTerm >= mEndTerm) {
+            mEndTermText.setError("Must be after start term");
+            return false;
+        } else if (mStartHour >= mEndHour && mStartMinute >= mEndMinute) {
+            mEndTimeText.setError("Must be after start time");
+            return false;
+        }
         return true;
     }
 
     public boolean saveData(boolean newData) {
-        //Feed fake data for now :)
-        Calendar cal = Calendar.getInstance();
+        if (newData) {
+            mRealm.beginTransaction();
+            Schedule realmSchedule = mRealm.createObject(Schedule.class);
 
-        cal.set(Calendar.HOUR, 5);
-        cal.set(Calendar.MINUTE, 45);
-        final long startTime = cal.getTimeInMillis();
-
-        cal.set(Calendar.HOUR, 8);
-        cal.set(Calendar.MINUTE, 20);
-        final long endTime = cal.getTimeInMillis();
-
-        mRealm.beginTransaction();
-        Schedule realmSchedule = mRealm.createObject(Schedule.class);
-            realmSchedule.setUniqueId(-1);
-            realmSchedule.setTitle("Title 1");
-            realmSchedule.setLocation("Location 1");
-            realmSchedule.setDescription("Short desc");
-            realmSchedule.setStartTerm(-1);
-            realmSchedule.setEndTerm(-1);
-            realmSchedule.setStartTimestamp(startTime);
-            realmSchedule.setEndTimestamp(endTime);
+            realmSchedule.setUniqueId(ScheduleUID.get());
+            realmSchedule.setTitle(mTitleText.getText().toString());
+            realmSchedule.setLocation(mLocationText.getText().toString());
+            realmSchedule.setDescription(mDescriptionText.getText().toString());
+            realmSchedule.setStartTerm(mStartTerm);
+            realmSchedule.setEndTerm(mEndTerm);
+            realmSchedule.setStartHour(mStartHour);
+            realmSchedule.setStartMinute(mStartMinute);
+            realmSchedule.setEndHour(mEndHour);
+            realmSchedule.setEndMinute(mEndMinute);
+            realmSchedule.setDays(getRepeatingDays());
             realmSchedule.setDisableTimestamp(-1);
-            realmSchedule.setDays("-1");
-        mRealm.commitTransaction();
-
+            mRealm.commitTransaction();
+        }
         return true;
     }
 
-    public void setDailyCheckService(boolean enable) {
-        final boolean dailyServiceActive = mPreferences.getBoolean(PREF_DAILY_CHECK, false);
+    public String getRepeatingDays() {
+        StringBuilder sb = new StringBuilder();
 
-        // If preferences is disable and asking to disable = return or
-        // If preference is enable and asking to enable = return
-        if ((!dailyServiceActive && !enable) || (dailyServiceActive && enable)) {
-            return;
+        if (mRepeatSun.isChecked()) {
+            sb.append("1").append(", ");
+        }
+        if (mRepeatMon.isChecked()) {
+            sb.append("2").append(", ");
+        }
+        if (mRepeatTues.isChecked()) {
+            sb.append("3").append(", ");
+        }
+        if (mRepeatWed.isChecked()) {
+            sb.append("4").append(", ");
+        }
+        if (mRepeatThurs.isChecked()) {
+            sb.append("5").append(", ");
+        }
+        if (mRepeatFri.isChecked()) {
+            sb.append("6").append(", ");
+        }
+        if (mRepeatSat.isChecked()) {
+            sb.append("7").append(", ");
         }
 
-        if (enable) {
-            mDailyCheckReceiver.setDailyAlarm(mAppContext);
+        if (sb.length() == 0) {
+            sb.append("-1");
         } else {
-            mDailyCheckReceiver.removeDailyAlarm(mAppContext);
+            sb.deleteCharAt(sb.lastIndexOf(", "));
         }
-
-        mPreferences.edit().putBoolean(PREF_DAILY_CHECK, enable).apply();
+        return sb.toString();
     }
 
     @OnClick({R.id.edit_time_start_text, R.id.edit_time_end_text})
@@ -156,11 +212,16 @@ public class EditActivity extends ActionBarActivity {
         TimePickerFragment newFragment = new TimePickerFragment();
         newFragment.setListener(new TimePickerFragment.Listener() {
             @Override
-            public void onTimeReceive(int hour_of_day, int minutes) {
-                ((MaterialEditText) v).setText(Utils.formatShowTime(mAppContext, hour_of_day, minutes));
+            public void onTimeReceive(long millis, int hour_of_day, int minutes) {
+                ((MaterialEditText) v).setText(Utils.formatShowTime(mAppContext, millis));
 
                 if (v.getId() == R.id.edit_time_start_text) {
-                    findViewById(R.id.edit_time_end_text).performClick();
+                    mStartHour = hour_of_day;
+                    mStartMinute = minutes;
+                    mEndTimeText.performClick();
+                } else if (v.getId() == R.id.edit_time_end_text) {
+                    mEndHour = hour_of_day;
+                    mEndMinute = minutes;
                 }
             }
         });
@@ -172,11 +233,14 @@ public class EditActivity extends ActionBarActivity {
         DatePickerFragment newFragment = new DatePickerFragment();
         newFragment.setListener(new DatePickerFragment.Listener() {
             @Override
-            public void onDateReceive(int year, int month, int day) {
-                ((MaterialEditText) v).setText(Utils.formatShowDate(mAppContext, year, month, day));
+            public void onDateReceive(long millis, int year, int month, int day) {
+                ((MaterialEditText) v).setText(Utils.formatShowDate(mAppContext, millis));
 
                 if (v.getId() == R.id.edit_term_start_text) {
-                    findViewById(R.id.edit_term_end_text).performClick();
+                    mStartTerm = millis;
+                    mEndTermText.performClick();
+                } else if (v.getId() == R.id.edit_term_end_text) {
+                    mEndTerm = millis;
                 }
             }
         });
@@ -185,12 +249,13 @@ public class EditActivity extends ActionBarActivity {
 
     public static final class DatePickerFragment extends DialogFragment
             implements DatePickerDialog.OnDateSetListener {
+
         private Listener listener;
+        final Calendar c = Calendar.getInstance();
 
         @Override @NonNull
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             // Use the current date as the default date in the picker
-            final Calendar c = Calendar.getInstance();
             int year = c.get(Calendar.YEAR);
             int month = c.get(Calendar.MONTH);
             int day = c.get(Calendar.DAY_OF_MONTH);
@@ -202,7 +267,14 @@ public class EditActivity extends ActionBarActivity {
 
         @Override
         public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-            listener.onDateReceive(year, month, day);
+            c.set(Calendar.YEAR, year);
+            c.set(Calendar.MONTH, month);
+            c.set(Calendar.DAY_OF_MONTH, day);
+
+            // Make the millis, fair
+            c.set(Calendar.HOUR_OF_DAY, 0);
+            c.set(Calendar.MINUTE, 0);
+            listener.onDateReceive(c.getTimeInMillis(), year, month, day);
         }
 
         public void setListener(Listener l) {
@@ -210,14 +282,15 @@ public class EditActivity extends ActionBarActivity {
         }
 
         interface Listener {
-            void onDateReceive(int year, int month, int day);
+            void onDateReceive(long millis, int year, int month, int day);
         }
     }
 
-
     public static final class TimePickerFragment extends DialogFragment
             implements TimePickerDialog.OnTimeSetListener {
+
         private Listener listener;
+        final Calendar c = Calendar.getInstance();
 
         @Override @NonNull
         public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -231,7 +304,10 @@ public class EditActivity extends ActionBarActivity {
 
         @Override
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-            listener.onTimeReceive(hourOfDay, minute);
+            c.set(Calendar.HOUR_OF_DAY, hourOfDay);
+            c.set(Calendar.MINUTE, minute);
+
+            listener.onTimeReceive(c.getTimeInMillis(), hourOfDay, minute);
         }
 
         public void setListener(Listener l) {
@@ -239,7 +315,7 @@ public class EditActivity extends ActionBarActivity {
         }
 
         interface Listener {
-            void onTimeReceive(int hourOfDay, int minute);
+            void onTimeReceive(long millis, int hourOfDay, int minute);
         }
     }
 }

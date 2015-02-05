@@ -7,6 +7,7 @@ import com.path.android.jobqueue.Params;
 
 import org.jakelcode.schedule.event.ReceiveScheduleEvent;
 import org.jakelcode.schedule.realm.Schedule;
+import org.jakelcode.schedule.realm.ScheduleCache;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,19 +46,20 @@ public class LoadingScheduleJob extends Job {
 
             // Loading Schedule from database
             RealmResults<Schedule> results = mRealm.where(Schedule.class).findAll();
+
             // Sort it descending, so the latest ones will be displayed on top
             // Also it is easier to obtain the last uniqueId exists in the database
             results.sort("uniqueId", RealmResults.SORT_ORDER_DESCENDING);
 
-            // Convert Schedule into POJO (ScheduleData) and pass it through eventBus
-            final List<Schedule> dataList = new ArrayList<>();
+            List<ScheduleCache> caches = new ArrayList<>();
 
-            for (Schedule schedule : results) {
-                dataList.add(schedule);
+            for (Schedule s : results) {
+                caches.add(new ScheduleCache(s));
             }
 
-            if (dataList.size() > 0) {
-                mEventBus.post(new ReceiveScheduleEvent(dataList));
+            if (results.size() > 0) {
+                // Passing the LAST UNIQUE ID found in data and the list of schedules
+                mEventBus.post(new ReceiveScheduleEvent(caches));
             }
         } finally {
             if (mRealm != null) {

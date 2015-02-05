@@ -2,6 +2,7 @@ package org.jakelcode.schedule;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,7 +20,7 @@ import com.path.android.jobqueue.JobManager;
 
 import org.jakelcode.schedule.event.ReceiveScheduleEvent;
 import org.jakelcode.schedule.job.LoadingScheduleJob;
-import org.jakelcode.schedule.realm.Schedule;
+import org.jakelcode.schedule.realm.ScheduleCache;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,15 +36,15 @@ import me.grantland.widget.AutofitHelper;
 
 public class MainActivity extends ActionBarActivity {
     private static final String TAG = MainActivity.class.getName();
+    private static final String PREF_DAILY_CHECK = "daily-check";
 
     @Inject EventBus mEventBus;
     @Inject Context mAppContext;
-    @Inject NotifyReceiver mNotifyReceiver;
     @Inject JobManager mJobManager;
+    @Inject SharedPreferences mPreferences;
+    private DailyCheckReceiver mDailyCheckReceiver = new DailyCheckReceiver();
 
     @InjectView(R.id.schedule_recycle_view) RecyclerView mRecyclerView;
-
-    private int Alarm_ID = 0; // Just for debug purpose.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,17 +61,15 @@ public class MainActivity extends ActionBarActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.include_toolbar);
         setSupportActionBar(toolbar);
-        setupRecycleView();
 
+        //Initialize empty adapters
+        setupRecycleView(new ScheduleAdapter(mAppContext, new ArrayList<ScheduleCache>()));
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-
-        // Look at Android Activity Life Cycle to understand why load in onStart
-        // Loading schedules from database
-        mJobManager.addJobInBackground(new LoadingScheduleJob(mAppContext));
+        mJobManager.addJobInBackground(new LoadingScheduleJob(this));
     }
 
     @Override
@@ -88,16 +87,15 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent checkReceiverIntent = new Intent(mAppContext, DailyCheckReceiver.class);
+            checkReceiverIntent.setAction(DailyCheckReceiver.ACTION_DAILY_CHECK);
+            sendBroadcast(checkReceiverIntent);
+
             return true;
-            // FOR DEBUG PURPOSE.
-            // adding button to screen is ugly and 'more' work.
         } if (id == R.id.edit_activity) {
             startActivity(new Intent(mAppContext, EditActivity.class));
             return true;
@@ -106,12 +104,7 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void setupRecycleView() {
-        final List<Schedule> dataList = new ArrayList<>();
-
-        ScheduleListAdapter adapter = new ScheduleListAdapter(mAppContext, dataList);
-        RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.schedule_recycle_view);
-
+    public void setupRecycleView(ScheduleAdapter adapter) {
         // improve performance if you know that changes in content
         // do not change the size of the RecyclerView
         mRecyclerView.setHasFixedSize(true);
@@ -125,16 +118,45 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void onEventMainThread(ReceiveScheduleEvent d) {
-        // Initialize the unique identifier
-        // The value that is being set is the largest value in the database
-        ScheduleUID.set(d.getScheduleList().get(0).getUniqueId());
+        if (d.getScheduleList().size() > 0) {
+            // Initialize the unique identifier.
+            ScheduleUID.set(d.getScheduleList().get(0).getUniqueId());
 
-        ScheduleListAdapter adapter = new ScheduleListAdapter(mAppContext, d.getScheduleList());
+            setDailyCheckService(true);
+        } else {
+            // Cancel daily check service if no alarm exists
+            setDailyCheckService(false);
+        }
+
+        ScheduleAdapter adapter = new ScheduleAdapter(mAppContext, d.getScheduleList());
         if (mRecyclerView.getAdapter() != null) {
             mRecyclerView.swapAdapter(adapter, true);
         } else {
             mRecyclerView.setAdapter(adapter);
         }
+    }
+
+
+    public void setDailyCheckService(boolean enable) {
+        final boolean dailyServiceActive = mPreferences.getBoolean(PREF_DAILY_CHECK, false);
+
+        // If preferences is disable and asking to disable = return or
+        // If preference is enable and asking to enable = return
+        if ((!dailyServiceActive && !enable) || (dailyServiceActive && enable)) {
+            return;
+        }
+
+        if (enable) {
+            Intent checkReceiverIntent = new Intent();
+            checkReceiverIntent.setAction(DailyCheckReceiver.ACTION_DAILY_CHECK);
+            sendBroadcast(checkReceiverIntent);
+
+            mDailyCheckReceiver.setDailyAlarm(mAppContext);
+        } else {
+            mDailyCheckReceiver.removeDailyAlarm(mAppContext);
+        }
+
+        mPreferences.edit().putBoolean(PREF_DAILY_CHECK, enable).apply();
     }
 
     final static class ScheduleViewHolder extends RecyclerView.ViewHolder {
@@ -150,11 +172,11 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    final class ScheduleListAdapter extends RecyclerView.Adapter<ScheduleViewHolder> {
-        private final List<Schedule> mModelList;
+    final class ScheduleAdapter extends RecyclerView.Adapter<ScheduleViewHolder> {
+        private final List<ScheduleCache> mModelList;
         private final Context mContext;
 
-        public ScheduleListAdapter(Context c, List<Schedule> models) {
+        public ScheduleAdapter(Context c, List<ScheduleCache> models) {
             mContext = c;
             mModelList = models;
         }
@@ -173,7 +195,7 @@ public class MainActivity extends ActionBarActivity {
         @Override
         public void onBindViewHolder(ScheduleViewHolder holder, int position) {
             //Set the information... modellist -> holder
-            Schedule model = mModelList.get(position);
+            ScheduleCache model = mModelList.get(position);
 
             holder.title.setText(model.getTitle());
             AutofitHelper.create(holder.title).setMaxLines(2); // Fitting a bunch of text into 2 lines
@@ -182,8 +204,8 @@ public class MainActivity extends ActionBarActivity {
 
             holder.description.setText(model.getDescription());
 
-            holder.time.setText(Utils.formatShowTime(mContext, model.getStartTimestamp()) + " ~ "
-                    + Utils.formatShowTime(mContext, model.getEndTimestamp()));
+            holder.time.setText(Utils.formatShowTime(mContext, model.getStartHour(), model.getStartMinute()) + " ~ "
+                    + Utils.formatShowTime(mContext, model.getEndHour(), model.getEndMinute()));
         }
 
         @Override

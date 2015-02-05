@@ -13,11 +13,14 @@ public class Schedule extends RealmObject {
 
     private String description;
 
-    private long startTerm;
-    private long endTerm;
+    private long startTerm; // time millis
+    private long endTerm; // time millis
 
-    private long startTimestamp;
-    private long endTimestamp;
+    private int startHour; // 24 hours
+    private int startMinute;
+
+    private int endHour; // 24 hours
+    private int endMinute;
 
     /**
      * -1 = Event is active
@@ -77,22 +80,6 @@ public class Schedule extends RealmObject {
         this.endTerm = endTerm;
     }
 
-    public long getStartTimestamp() {
-        return startTimestamp;
-    }
-
-    public void setStartTimestamp(long startTimestamp) {
-        this.startTimestamp = startTimestamp;
-    }
-
-    public long getEndTimestamp() {
-        return endTimestamp;
-    }
-
-    public void setEndTimestamp(long endTimestamp) {
-        this.endTimestamp = endTimestamp;
-    }
-
     public String getDays() {
         return days;
     }
@@ -107,5 +94,37 @@ public class Schedule extends RealmObject {
 
     public void setDisableTimestamp(long disableTimestamp) {
         this.disableTimestamp = disableTimestamp;
+    }
+
+    public int getStartHour() {
+        return startHour;
+    }
+
+    public void setStartHour(int startHour) {
+        this.startHour = startHour;
+    }
+
+    public int getStartMinute() {
+        return startMinute;
+    }
+
+    public void setStartMinute(int startMinute) {
+        this.startMinute = startMinute;
+    }
+
+    public int getEndHour() {
+        return endHour;
+    }
+
+    public void setEndHour(int endHour) {
+        this.endHour = endHour;
+    }
+
+    public int getEndMinute() {
+        return endMinute;
+    }
+
+    public void setEndMinute(int endMinute) {
+        this.endMinute = endMinute;
     }
 }

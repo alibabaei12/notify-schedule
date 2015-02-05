@@ -27,7 +27,7 @@ public class NotifyService extends IntentService {
             am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
         } else if (dataString.contains("silent")) {
             Log.d(TAG, "Received Ringer Silent from " + dataString);
-            am.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+            am.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
         }
 
         NotifyReceiver.completeWakefulIntent(intent);
