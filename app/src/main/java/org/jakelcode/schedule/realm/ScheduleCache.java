@@ -22,7 +22,7 @@ public class ScheduleCache {
     private int endHour; // 24 hours
     private int endMinute;
 
-    private long disableTimestamp;
+    private long disableMillis;
 
     private String days;
 
@@ -37,7 +37,7 @@ public class ScheduleCache {
         this.startMinute = s.getStartMinute();
         this.endHour = s.getEndHour();
         this.endMinute = s.getEndMinute();
-        this.disableTimestamp = s.getDisableTimestamp();
+        this.disableMillis = s.getDisableMillis();
         this.days = s.getDays();
     }
 
@@ -81,8 +81,8 @@ public class ScheduleCache {
         return endMinute;
     }
 
-    public long getDisableTimestamp() {
-        return disableTimestamp;
+    public long getDisableMillis() {
+        return disableMillis;
     }
 
     public String getDays() {

@@ -27,7 +27,7 @@ public class Schedule extends RealmObject {
      * 0 = Event is permanently inactive
      * Event is disabled until disableTimestamp is surpass
      */
-    private long disableTimestamp;
+    private long disableMillis;
 
     // Require to use Realm Integer because RealmList doesn't accept Integer
     private String days;
@@ -88,12 +88,12 @@ public class Schedule extends RealmObject {
         this.days = days;
     }
 
-    public long getDisableTimestamp() {
-        return disableTimestamp;
+    public long getDisableMillis() {
+        return disableMillis;
     }
 
-    public void setDisableTimestamp(long disableTimestamp) {
-        this.disableTimestamp = disableTimestamp;
+    public void setDisableMillis(long disableMillis) {
+        this.disableMillis = disableMillis;
     }
 
     public int getStartHour() {

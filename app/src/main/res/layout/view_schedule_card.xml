@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:padding="@dimen/spacing_medium"
+        android:padding="@dimen/spacing_small"
         android:orientation="vertical">
 
         <TextView
@@ -22,8 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/text_size_large"
-            android:textColor="@color/light_blue_700"
-            android:text="Title"/>
+            android:textColor="@color/light_blue_700"/>
 
         <TextView
             android:id="@+id/schedule_card_location"
@@ -31,7 +30,6 @@
             android:layout_width="wrap_content"
             android:textSize="@dimen/text_size_medium"
             android:textColor="@color/light_blue_300"
-            android:text="Location"
             />
 
         <TextView
@@ -39,8 +37,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/text_size_small"
-            android:textColor="@color/grey_400"
-            android:text="Time"/>
+            android:textColor="@color/grey_400"/>
 
         <TextView
             android:id="@+id/schedule_card_desc"
@@ -48,7 +45,6 @@
             android:layout_width="wrap_content"
             android:textSize="@dimen/text_size_small"
             android:textColor="@color/grey_400"
-            android:text="Desc"
             />
 
     </LinearLayout>

@@ -22,7 +22,7 @@
             android:id="@+id/edit_title_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Title"
+            android:hint="@string/title"
             android:textSize="30sp"
             app:baseColor="@android:color/white"
             app:floatingLabel="highlight"
@@ -34,7 +34,7 @@
             android:id="@+id/edit_description_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Description"
+            android:hint="@string/description"
             android:textSize="24sp"
             app:baseColor="@android:color/white"
             app:floatingLabel="highlight"
@@ -55,6 +55,18 @@
         android:layout_marginRight="@dimen/activity_horizontal_margin"
         >
 
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/edit_location_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/location"
+            android:textSize="18sp"
+            app:baseColor="@android:color/black"
+            app:floatingLabel="highlight"
+            app:primaryColor="?colorAccent"
+            app:singleLineEllipsis="true"/>
+
+
         <!-- Layout for start / end time -->
         <LinearLayout
             android:orientation="horizontal"
@@ -68,7 +80,7 @@
                 android:id="@+id/edit_time_start_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="Start Time"
+                android:hint="@string/start_time"
                 android:textSize="18sp"
                 android:layout_weight="1"
                 app:baseColor="@android:color/black"
@@ -81,7 +93,7 @@
                 android:id="@+id/edit_time_end_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="End Time"
+                android:hint="@string/end_time"
                 android:textSize="18sp"
                 android:layout_weight="1"
                 app:baseColor="@android:color/black"
@@ -104,7 +116,7 @@
                 android:id="@+id/edit_term_start_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Start Term"
+                android:hint="@string/start_term"
                 android:textSize="18sp"
                 android:layout_weight="1"
                 app:baseColor="@android:color/black"
@@ -117,7 +129,7 @@
                 android:id="@+id/edit_term_end_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="End Term"
+                android:hint="@string/end_term"
                 android:textSize="18sp"
                 android:layout_weight="1"
                 app:baseColor="@android:color/black"
@@ -139,7 +151,7 @@
                 android:id="@+id/edit_days_sun"
                 android:layout_width="@dimen/button_width_small"
                 android:layout_height="wrap_content"
-                android:text="S"
+                android:text="@string/short_sunday"
                 android:textSize="@dimen/text_size_small"
                 android:background="@drawable/edit_day_button"
                 android:layout_weight="1"/>
@@ -147,7 +159,7 @@
                 android:id="@+id/edit_days_m"
                 android:layout_width="@dimen/button_width_small"
                 android:layout_height="wrap_content"
-                android:text="M"
+                android:text="@string/short_monday"
                 android:textSize="@dimen/text_size_small"
                 android:background="@drawable/edit_day_button"
                 android:layout_weight="1"/>
@@ -155,7 +167,7 @@
                 android:id="@+id/edit_days_t"
                 android:layout_width="@dimen/button_width_small"
                 android:layout_height="wrap_content"
-                android:text="T"
+                android:text="@string/short_tuesday"
                 android:textSize="@dimen/text_size_small"
                 android:background="@drawable/edit_day_button"
                 android:layout_weight="1"/>
@@ -163,7 +175,7 @@
                 android:id="@+id/edit_days_w"
                 android:layout_width="@dimen/button_width_small"
                 android:layout_height="wrap_content"
-                android:text="W"
+                android:text="@string/short_wednesday"
                 android:textSize="@dimen/text_size_small"
                 android:background="@drawable/edit_day_button"
                 android:layout_weight="1"/>
@@ -171,7 +183,7 @@
                 android:id="@+id/edit_days_th"
                 android:layout_width="@dimen/button_width_small"
                 android:layout_height="wrap_content"
-                android:text="Th"
+                android:text="@string/short_thursday"
                 android:textSize="@dimen/text_size_small"
                 android:background="@drawable/edit_day_button"
                 android:layout_weight="1"/>
@@ -179,7 +191,7 @@
                 android:id="@+id/edit_days_f"
                 android:layout_width="@dimen/button_width_small"
                 android:layout_height="wrap_content"
-                android:text="F"
+                android:text="@string/short_friday"
                 android:textSize="@dimen/text_size_small"
                 android:background="@drawable/edit_day_button"
                 android:layout_weight="1"/>
@@ -187,32 +199,10 @@
                 android:id="@+id/edit_days_sat"
                 android:layout_width="@dimen/button_width_small"
                 android:layout_height="wrap_content"
-                android:text="S"
+                android:text="@string/short_saturday"
                 android:textSize="@dimen/text_size_small"
                 android:background="@drawable/edit_day_button"
                 android:layout_weight="1"/>
         </LinearLayout>
-
-        <com.rengwuxian.materialedittext.MaterialEditText
-            android:id="@+id/edit_location_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Location"
-            android:textSize="18sp"
-            app:baseColor="@android:color/black"
-            app:floatingLabel="highlight"
-            app:primaryColor="?colorAccent"
-            app:singleLineEllipsis="true"/>
-
-        <!--<com.rengwuxian.materialedittext.MaterialEditText-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:hint="Pictures"-->
-            <!--android:textSize="18sp"-->
-            <!--app:baseColor="@android:color/black"-->
-            <!--app:floatingLabel="highlight"-->
-            <!--app:primaryColor="?colorAccent"-->
-            <!--app:singleLineEllipsis="true"/>-->
-        <!---->
     </LinearLayout>
 </FrameLayout>

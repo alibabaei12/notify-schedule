@@ -12,7 +12,7 @@
     <dimen name="text_size_medium">16sp</dimen>
     <dimen name="text_size_large">24sp</dimen>
 
-    <dimen name="schedule_card_height">148dp</dimen>
-    <dimen name="schedule_card_image_width">128dp</dimen>
+    <dimen name="schedule_card_height">72dp</dimen>
     <dimen name="button_width_small">42dp</dimen>
+    <dimen name="long_toolbar_height">232dp</dimen>
 </resources>
