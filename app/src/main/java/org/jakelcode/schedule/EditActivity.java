@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,14 +21,17 @@ import android.widget.Toast;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import org.jakelcode.schedule.realm.Schedule;
+import org.jakelcode.schedule.realm.ScheduleCache;
 import org.jakelcode.schedule.ui.CheckableButton;
 
 import java.util.Calendar;
+import java.util.List;
 
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.InjectViews;
 import butterknife.OnClick;
 import io.realm.Realm;
 
@@ -54,17 +58,56 @@ public class EditActivity extends ActionBarActivity {
     @InjectView(R.id.edit_days_f) CheckableButton mRepeatFri;
     @InjectView(R.id.edit_days_sat) CheckableButton mRepeatSat;
 
+    @InjectViews({R.id.edit_days_sun, R.id.edit_days_m, R.id.edit_days_t, R.id.edit_days_w,
+            R.id.edit_days_th, R.id.edit_days_f, R.id.edit_days_sat})
+    List<CheckableButton> mRepeatDayList;
+
+    private long mUniqueId = -1;
     private long mStartTerm = -1;
     private long mEndTerm = -1;
+    private long mDisableMillis = -1; // Not yet implement
 
     private int mStartHour = -1;
     private int mStartMinute = -1;
     private int mEndHour = -1;
     private int mEndMinute = -1;
 
+    private String mRepeatDays = "-1";
     @Override
     protected void onStart() {
         super.onStart();
+
+        final ScheduleCache model = getIntent().getParcelableExtra(Utils.PARCEL_SCHEDULE);
+
+        if (model != null) { // Edit
+            // Initialize variables
+            mUniqueId = model.getUniqueId();
+            mStartHour = model.getStartHour();
+            mStartMinute = model.getStartMinute();
+            mEndHour = model.getEndHour();
+            mEndMinute = model.getEndMinute();
+            mStartTerm = model.getStartTerm();
+            mEndTerm = model.getEndTerm();
+            mDisableMillis = model.getDisableMillis();
+            mRepeatDays = model.getDays();
+
+            // Rendering UIs
+            mTitleText.setText(model.getTitle());
+            mDescriptionText.setText(model.getDescription());
+            mLocationText.setText(model.getLocation());
+            mStartTimeText.setText(Utils.formatShowTime(mAppContext, mStartHour, mStartMinute));
+            mEndTimeText.setText(Utils.formatShowTime(mAppContext, mEndHour, mEndMinute));
+            mStartTermText.setText(Utils.formatShowDate(mAppContext, mStartTerm));
+            mEndTermText.setText(Utils.formatShowDate(mAppContext, mEndTerm));
+
+            // Render days.
+            if (!mRepeatDays.equals("-1")) {
+                String[] parts = mRepeatDays.split(",");
+                for (String s : parts) {
+                    mRepeatDayList.get(Integer.parseInt(s.trim()) - 1).setChecked(true);
+                }
+            }
+        }
     }
 
     @Override
@@ -93,6 +136,9 @@ public class EditActivity extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_edit, menu);
+
+        boolean isEditMode = (mUniqueId != -1);
+        menu.findItem(R.id.menu_action_delete).setVisible(isEditMode);
         return true;
     }
 
@@ -104,15 +150,16 @@ public class EditActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_confirm) {
+        if (id == R.id.menu_action_confirm) {
             if (validateData()) {
-                if (!saveData(true)) {
+                boolean newData = (mUniqueId == -1);
+                if (!saveData(newData)) {
                     Toast.makeText(mAppContext, "Failed to save data", Toast.LENGTH_LONG).show();
                 } else {
                     finish();
                 }
             }
-        } else if (id == R.id.action_delete) {
+        } else if (id == R.id.menu_action_delete) {
 
         }
 
@@ -142,7 +189,7 @@ public class EditActivity extends ActionBarActivity {
         } else if (mStartHour == -1 && mEndHour != -1) {
             mEndTimeText.setError("Start time is required");
             return false;
-        } else if (mStartTerm >= mEndTerm) {
+        } else if (mStartTerm != mEndTerm && mStartTerm >= mEndTerm) {
             mEndTermText.setError("Must be after start term");
             return false;
         } else if (mStartHour >= mEndHour && mStartMinute >= mEndMinute) {
@@ -168,35 +215,19 @@ public class EditActivity extends ActionBarActivity {
             realmSchedule.setEndHour(mEndHour);
             realmSchedule.setEndMinute(mEndMinute);
             realmSchedule.setDays(getRepeatingDays());
-            realmSchedule.setDisableTimestamp(-1);
+            realmSchedule.setDisableMillis(-1);
             mRealm.commitTransaction();
         }
         return true;
     }
 
-    public String getRepeatingDays() {
+    private String getRepeatingDays() {
         StringBuilder sb = new StringBuilder();
 
-        if (mRepeatSun.isChecked()) {
-            sb.append("1").append(", ");
-        }
-        if (mRepeatMon.isChecked()) {
-            sb.append("2").append(", ");
-        }
-        if (mRepeatTues.isChecked()) {
-            sb.append("3").append(", ");
-        }
-        if (mRepeatWed.isChecked()) {
-            sb.append("4").append(", ");
-        }
-        if (mRepeatThurs.isChecked()) {
-            sb.append("5").append(", ");
-        }
-        if (mRepeatFri.isChecked()) {
-            sb.append("6").append(", ");
-        }
-        if (mRepeatSat.isChecked()) {
-            sb.append("7").append(", ");
+        for (int i = 0; i < mRepeatDayList.size(); i++) {
+            if (mRepeatDayList.get(i).isChecked()) {
+                sb.append((i + 1)).append(", ");
+            }
         }
 
         if (sb.length() == 0) {
@@ -214,7 +245,6 @@ public class EditActivity extends ActionBarActivity {
             @Override
             public void onTimeReceive(long millis, int hour_of_day, int minutes) {
                 ((MaterialEditText) v).setText(Utils.formatShowTime(mAppContext, millis));
-
                 if (v.getId() == R.id.edit_time_start_text) {
                     mStartHour = hour_of_day;
                     mStartMinute = minutes;
@@ -267,6 +297,7 @@ public class EditActivity extends ActionBarActivity {
 
         @Override
         public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+            c.setTimeInMillis(System.currentTimeMillis());
             c.set(Calendar.YEAR, year);
             c.set(Calendar.MONTH, month);
             c.set(Calendar.DAY_OF_MONTH, day);
@@ -304,6 +335,7 @@ public class EditActivity extends ActionBarActivity {
 
         @Override
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+            c.setTimeInMillis(System.currentTimeMillis());
             c.set(Calendar.HOUR_OF_DAY, hourOfDay);
             c.set(Calendar.MINUTE, minute);
 

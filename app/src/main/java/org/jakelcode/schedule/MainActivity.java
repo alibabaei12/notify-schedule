@@ -8,6 +8,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -38,6 +39,7 @@ public class MainActivity extends ActionBarActivity {
     private static final String TAG = MainActivity.class.getName();
     private static final String PREF_DAILY_CHECK = "daily-check";
 
+
     @Inject EventBus mEventBus;
     @Inject Context mAppContext;
     @Inject JobManager mJobManager;
@@ -62,7 +64,7 @@ public class MainActivity extends ActionBarActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.include_toolbar);
         setSupportActionBar(toolbar);
 
-        //Initialize empty adapters
+        //Initialize empty adapters, no listener cause no cards there.
         setupRecycleView(new ScheduleAdapter(mAppContext, new ArrayList<ScheduleCache>()));
     }
 
@@ -136,7 +138,6 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-
     public void setDailyCheckService(boolean enable) {
         final boolean dailyServiceActive = mPreferences.getBoolean(PREF_DAILY_CHECK, false);
 
@@ -172,7 +173,7 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    final class ScheduleAdapter extends RecyclerView.Adapter<ScheduleViewHolder> {
+    public final class ScheduleAdapter extends RecyclerView.Adapter<ScheduleViewHolder> {
         private final List<ScheduleCache> mModelList;
         private final Context mContext;
 
@@ -181,12 +182,32 @@ public class MainActivity extends ActionBarActivity {
             mModelList = models;
         }
 
+        public List<ScheduleCache> getModelList() {
+            return mModelList;
+        }
+
+        public ScheduleCache getModel(int pos) {
+            return mModelList.get(pos);
+        }
+
         @Override
-        public ScheduleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public ScheduleViewHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
             //Load the layout for each card/entry.
-            View itemView = LayoutInflater.
+            final View itemView = LayoutInflater.
                     from(parent.getContext()).
                     inflate(R.layout.view_schedule_card, parent, false);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final int holderPosition = ((RecyclerView) parent).getChildPosition(v);
+
+                    Intent i = new Intent(mAppContext, EditActivity.class);
+                    i.putExtra(Utils.PARCEL_SCHEDULE, mModelList.get(holderPosition));
+
+                    startActivity(i);
+                }
+            });
 
             return new ScheduleViewHolder(itemView);
         }

@@ -61,6 +61,7 @@
             android:layout_height="wrap_content"
             android:hint="@string/location"
             android:textSize="18sp"
+            android:layout_marginTop="@dimen/spacing_medium"
             app:baseColor="@android:color/black"
             app:floatingLabel="highlight"
             app:primaryColor="?colorAccent"
@@ -72,7 +73,6 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_medium"
             android:weightSum="2"
             >
 

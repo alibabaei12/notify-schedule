@@ -1,11 +1,12 @@
 package org.jakelcode.schedule.realm;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
- * Description...
- *
  * @author Pin Khe "Jake" Loo (04 February, 2015)
  */
-public class ScheduleCache {
+public class ScheduleCache implements Parcelable {
     private long uniqueId;
 
     private String title;
@@ -88,4 +89,51 @@ public class ScheduleCache {
     public String getDays() {
         return days;
     }
+
+    //Parcelable implementation
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.uniqueId);
+        dest.writeString(this.title);
+        dest.writeString(this.location);
+        dest.writeString(this.description);
+        dest.writeLong(this.startTerm);
+        dest.writeLong(this.endTerm);
+        dest.writeInt(this.startHour);
+        dest.writeInt(this.startMinute);
+        dest.writeInt(this.endHour);
+        dest.writeInt(this.endMinute);
+        dest.writeLong(this.disableMillis);
+        dest.writeString(this.days);
+    }
+
+    private ScheduleCache(Parcel in) {
+        this.uniqueId = in.readLong();
+        this.title = in.readString();
+        this.location = in.readString();
+        this.description = in.readString();
+        this.startTerm = in.readLong();
+        this.endTerm = in.readLong();
+        this.startHour = in.readInt();
+        this.startMinute = in.readInt();
+        this.endHour = in.readInt();
+        this.endMinute = in.readInt();
+        this.disableMillis = in.readLong();
+        this.days = in.readString();
+    }
+
+    public static final Creator<ScheduleCache> CREATOR = new Creator<ScheduleCache>() {
+        public ScheduleCache createFromParcel(Parcel source) {
+            return new ScheduleCache(source);
+        }
+
+        public ScheduleCache[] newArray(int size) {
+            return new ScheduleCache[size];
+        }
+    };
 }

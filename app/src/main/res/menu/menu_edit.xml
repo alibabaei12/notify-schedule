@@ -4,13 +4,13 @@
       tools:context="org.jakelcode.schedule.EditActivity">
 
     <item
-        android:id="@+id/action_delete"
+        android:id="@+id/menu_action_delete"
         android:icon="@drawable/abc_ic_menu_cut_mtrl_alpha"
-        android:title="Delete"
+        android:title="@string/action_delete"
         app:showAsAction="ifRoom"/>
 
     <item
-        android:id="@+id/action_confirm"
+        android:id="@+id/menu_action_confirm"
         android:icon="@drawable/abc_ic_commit_search_api_mtrl_alpha"
         android:title="@string/action_confirm"
         app:showAsAction="ifRoom"/>

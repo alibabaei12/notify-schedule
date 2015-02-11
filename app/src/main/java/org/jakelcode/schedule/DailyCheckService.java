@@ -33,7 +33,10 @@ public class DailyCheckService extends IntentService {
         final Realm mRealm = Realm.getInstance(mAppContext);
         try {
             final NotifyReceiver notifyReceiver = new NotifyReceiver();
+
             final Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(System.currentTimeMillis());
+
             final int curDay = calendar.get(Calendar.DAY_OF_WEEK);
 
             // Looking through database
@@ -45,8 +48,6 @@ public class DailyCheckService extends IntentService {
                         .lessThan("startTerm", calendar.getTimeInMillis())
                     .endGroup()
                     .findAll();
-
-            Log.d(TAG, "Results found : " + realmResults.size());
 
             long startTimeMillis;
             long endTimeMillis;
