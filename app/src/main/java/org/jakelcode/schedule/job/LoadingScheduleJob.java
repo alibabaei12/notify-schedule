@@ -58,7 +58,6 @@ public class LoadingScheduleJob extends Job {
             }
 
             if (results.size() > 0) {
-                // Passing the LAST UNIQUE ID found in data and the list of schedules
                 mEventBus.post(new ReceiveScheduleEvent(caches));
             }
         } finally {

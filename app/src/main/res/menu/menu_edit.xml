@@ -5,13 +5,12 @@
 
     <item
         android:id="@+id/menu_action_delete"
-        android:icon="@drawable/abc_ic_menu_cut_mtrl_alpha"
+        android:icon="@drawable/ic_delete_white_24dp"
         android:title="@string/action_delete"
         app:showAsAction="ifRoom"/>
 
     <item
-        android:id="@+id/menu_action_confirm"
-        android:icon="@drawable/abc_ic_commit_search_api_mtrl_alpha"
-        android:title="@string/action_confirm"
+        android:id="@+id/menu_action_save"
+        android:title="@string/action_save"
         app:showAsAction="ifRoom"/>
 </menu>

@@ -1,11 +1,15 @@
 package org.jakelcode.schedule;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.DialogPreference;
+import android.preference.Preference;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBarActivity;
@@ -124,6 +128,7 @@ public class EditActivity extends ActionBarActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.drawable.ic_close_white_24dp));
     }
 
     @Override
@@ -150,7 +155,7 @@ public class EditActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.menu_action_confirm) {
+        if (id == R.id.menu_action_save) {
             if (validateData()) {
                 boolean newData = (mUniqueId == -1);
                 if (!saveData(newData)) {
@@ -160,7 +165,21 @@ public class EditActivity extends ActionBarActivity {
                 }
             }
         } else if (id == R.id.menu_action_delete) {
-
+            new AlertDialog.Builder(this)
+                    .setMessage("Delete schedule?")
+                    .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            throw new UnsupportedOperationException();
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .create().show();
         }
 
         return super.onOptionsItemSelected(item);
@@ -200,24 +219,31 @@ public class EditActivity extends ActionBarActivity {
     }
 
     public boolean saveData(boolean newData) {
-        if (newData) {
-            mRealm.beginTransaction();
-            Schedule realmSchedule = mRealm.createObject(Schedule.class);
+        mRealm.beginTransaction();
 
+        Schedule realmSchedule;
+        if (newData) {
+            //Create object for new data and generate uid
+            realmSchedule = mRealm.createObject(Schedule.class);
             realmSchedule.setUniqueId(ScheduleUID.get());
-            realmSchedule.setTitle(mTitleText.getText().toString());
-            realmSchedule.setLocation(mLocationText.getText().toString());
-            realmSchedule.setDescription(mDescriptionText.getText().toString());
-            realmSchedule.setStartTerm(mStartTerm);
-            realmSchedule.setEndTerm(mEndTerm);
-            realmSchedule.setStartHour(mStartHour);
-            realmSchedule.setStartMinute(mStartMinute);
-            realmSchedule.setEndHour(mEndHour);
-            realmSchedule.setEndMinute(mEndMinute);
-            realmSchedule.setDays(getRepeatingDays());
-            realmSchedule.setDisableMillis(-1);
-            mRealm.commitTransaction();
+        } else {
+            //Fetch the information from database and identify by unique id
+            realmSchedule = mRealm.where(Schedule.class)
+                    .equalTo("uniqueId", mUniqueId).findFirst();
         }
+        realmSchedule.setTitle(mTitleText.getText().toString());
+        realmSchedule.setLocation(mLocationText.getText().toString());
+        realmSchedule.setDescription(mDescriptionText.getText().toString());
+        realmSchedule.setStartTerm(mStartTerm);
+        realmSchedule.setEndTerm(mEndTerm);
+        realmSchedule.setStartHour(mStartHour);
+        realmSchedule.setStartMinute(mStartMinute);
+        realmSchedule.setEndHour(mEndHour);
+        realmSchedule.setEndMinute(mEndMinute);
+        realmSchedule.setDays(getRepeatingDays());
+        realmSchedule.setDisableMillis(-1);
+
+        mRealm.commitTransaction();
         return true;
     }
 
