@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
+import com.melnykov.fab.FloatingActionButton;
 import com.path.android.jobqueue.JobManager;
 
 import org.jakelcode.schedule.event.ReceiveScheduleEvent;
@@ -30,6 +31,7 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 import io.fabric.sdk.android.Fabric;
 import me.grantland.widget.AutofitHelper;
@@ -47,6 +49,7 @@ public class MainActivity extends ActionBarActivity {
     private DailyCheckReceiver mDailyCheckReceiver = new DailyCheckReceiver();
 
     @InjectView(R.id.schedule_recycle_view) RecyclerView mRecyclerView;
+    @InjectView(R.id.schedule_fab_add) FloatingActionButton mFloatActionButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,9 +101,6 @@ public class MainActivity extends ActionBarActivity {
             sendBroadcast(checkReceiverIntent);
 
             return true;
-        } if (id == R.id.edit_activity) {
-            startActivity(new Intent(mAppContext, EditActivity.class));
-            return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -115,8 +115,9 @@ public class MainActivity extends ActionBarActivity {
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(mAppContext);
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
-
         mRecyclerView.setAdapter(adapter);
+
+        mFloatActionButton.attachToRecyclerView(mRecyclerView);
     }
 
     public void onEventMainThread(ReceiveScheduleEvent d) {
@@ -158,6 +159,11 @@ public class MainActivity extends ActionBarActivity {
         }
 
         mPreferences.edit().putBoolean(PREF_DAILY_CHECK, enable).apply();
+    }
+
+    @OnClick(R.id.schedule_fab_add)
+    public void openEditActivity() {
+        startActivity(new Intent(mAppContext, EditActivity.class));
     }
 
     final static class ScheduleViewHolder extends RecyclerView.ViewHolder {
