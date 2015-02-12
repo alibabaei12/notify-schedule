@@ -1,7 +1,9 @@
-package org.jakelcode.schedule.realm;
+package org.jakelcode.schedule;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import org.jakelcode.schedule.realm.Schedule;
 
 /**
  * @author Pin Khe "Jake" Loo (04 February, 2015)

@@ -8,7 +8,6 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,7 +21,6 @@ import com.path.android.jobqueue.JobManager;
 
 import org.jakelcode.schedule.event.ReceiveScheduleEvent;
 import org.jakelcode.schedule.job.LoadingScheduleJob;
-import org.jakelcode.schedule.realm.ScheduleCache;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -7,7 +7,7 @@ import com.path.android.jobqueue.Params;
 
 import org.jakelcode.schedule.event.ReceiveScheduleEvent;
 import org.jakelcode.schedule.realm.Schedule;
-import org.jakelcode.schedule.realm.ScheduleCache;
+import org.jakelcode.schedule.ScheduleCache;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,11 +1,8 @@
 package org.jakelcode.schedule.event;
 
-import org.jakelcode.schedule.realm.Schedule;
-import org.jakelcode.schedule.realm.ScheduleCache;
+import org.jakelcode.schedule.ScheduleCache;
 
 import java.util.List;
-
-import io.realm.RealmResults;
 
 /**
  * @author Pin Khe "Jake" Loo (25 January, 2015)

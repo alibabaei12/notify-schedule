@@ -6,15 +6,11 @@ import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.DialogPreference;
-import android.preference.Preference;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,7 +21,6 @@ import android.widget.Toast;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import org.jakelcode.schedule.realm.Schedule;
-import org.jakelcode.schedule.realm.ScheduleCache;
 import org.jakelcode.schedule.ui.CheckableButton;
 
 import java.util.Calendar;
@@ -158,11 +153,8 @@ public class EditActivity extends ActionBarActivity {
         if (id == R.id.menu_action_save) {
             if (validateData()) {
                 boolean newData = (mUniqueId == -1);
-                if (!saveData(newData)) {
-                    Toast.makeText(mAppContext, "Failed to save data", Toast.LENGTH_LONG).show();
-                } else {
-                    finish();
-                }
+                saveData(newData);
+                finish();
             }
         } else if (id == R.id.menu_action_delete) {
             new AlertDialog.Builder(this)
@@ -170,7 +162,8 @@ public class EditActivity extends ActionBarActivity {
                     .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            throw new UnsupportedOperationException();
+                            deleteData();
+                            finish();
                         }
                     })
                     .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -218,7 +211,17 @@ public class EditActivity extends ActionBarActivity {
         return true;
     }
 
-    public boolean saveData(boolean newData) {
+    public void deleteData() {
+        mRealm.beginTransaction();
+        Schedule realmSchedule = mRealm.where(Schedule.class)
+                .equalTo("uniqueId", mUniqueId).findFirst();
+
+        realmSchedule.removeFromRealm();
+
+        mRealm.commitTransaction();
+    }
+
+    public void saveData(boolean newData) {
         mRealm.beginTransaction();
 
         Schedule realmSchedule;
@@ -244,7 +247,6 @@ public class EditActivity extends ActionBarActivity {
         realmSchedule.setDisableMillis(-1);
 
         mRealm.commitTransaction();
-        return true;
     }
 
     private String getRepeatingDays() {
