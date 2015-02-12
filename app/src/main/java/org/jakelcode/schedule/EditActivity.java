@@ -180,7 +180,6 @@ public class EditActivity extends ActionBarActivity {
 
     @Override
     public boolean onSupportNavigateUp() {
-        finish();
         //TODO if data has been modified send a confirmation
         return super.onSupportNavigateUp();
     }

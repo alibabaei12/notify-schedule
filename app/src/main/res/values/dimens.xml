@@ -15,4 +15,5 @@
     <dimen name="schedule_card_height">72dp</dimen>
     <dimen name="button_width_small">42dp</dimen>
     <dimen name="long_toolbar_height">232dp</dimen>
+    <dimen name="long_toolbar_height_with_margin">248dp</dimen>
 </resources>

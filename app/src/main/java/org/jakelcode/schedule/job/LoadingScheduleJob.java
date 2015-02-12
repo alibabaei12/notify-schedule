@@ -57,9 +57,7 @@ public class LoadingScheduleJob extends Job {
                 caches.add(new ScheduleCache(s));
             }
 
-            if (results.size() > 0) {
-                mEventBus.post(new ReceiveScheduleEvent(caches));
-            }
+            mEventBus.post(new ReceiveScheduleEvent(caches));
         } finally {
             if (mRealm != null) {
                 mRealm.close();

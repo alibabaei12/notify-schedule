@@ -4,6 +4,7 @@
              android:orientation="vertical"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
+             android:background="@android:color/white"
              tools:context="org.jakelcode.schedule.EditActivity">
 
     <include layout="@layout/include_toolbar_long"/>
@@ -47,9 +48,9 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:orientation="vertical"
-        android:layout_marginTop="232dp"
-        android:layout_marginStart="72dp"
-        android:layout_marginLeft="72dp"
+        android:layout_marginTop="@dimen/long_toolbar_height_with_margin"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:layout_marginEnd="@dimen/activity_horizontal_margin"
         android:layout_marginRight="@dimen/activity_horizontal_margin"
         >
@@ -60,11 +61,11 @@
             android:layout_height="wrap_content"
             android:hint="@string/location"
             android:textSize="18sp"
-            android:layout_marginTop="@dimen/spacing_medium"
             app:baseColor="@android:color/black"
             app:floatingLabel="highlight"
             app:primaryColor="?colorAccent"
-            app:singleLineEllipsis="true"/>
+            app:iconLeft="@drawable/ic_place_grey600_24dp"
+            />
 
 
         <!-- Layout for start / end time -->
@@ -73,6 +74,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:weightSum="2"
+            android:layout_marginTop="@dimen/activity_horizontal_margin"
             >
 
             <com.rengwuxian.materialedittext.MaterialEditText
@@ -85,6 +87,7 @@
                 app:baseColor="@android:color/black"
                 app:floatingLabel="highlight"
                 app:primaryColor="?colorAccent"
+                app:iconLeft="@drawable/ic_alarm_grey600_24dp"
                 android:focusable="false"
                 />
 
@@ -108,12 +111,12 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_medium"
+            android:layout_marginTop="@dimen/activity_horizontal_margin"
             android:weightSum="2"
             >
             <com.rengwuxian.materialedittext.MaterialEditText
                 android:id="@+id/edit_term_start_text"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:hint="@string/start_term"
                 android:textSize="18sp"
@@ -121,12 +124,13 @@
                 app:baseColor="@android:color/black"
                 app:floatingLabel="highlight"
                 app:primaryColor="?colorAccent"
+                app:iconLeft="@drawable/ic_today_grey600_24dp"
                 android:focusable="false"
                 />
 
             <com.rengwuxian.materialedittext.MaterialEditText
                 android:id="@+id/edit_term_end_text"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:hint="@string/end_term"
                 android:textSize="18sp"
@@ -138,12 +142,14 @@
                 />
         </LinearLayout>
 
-        <!-- Layout for repeating days -->
+        <!-- Layout for repeating days. Margin : 72 - 16-->
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_medium"
+            android:layout_marginTop="@dimen/activity_horizontal_margin"
+            android:layout_marginStart="56dp"
+            android:layout_marginLeft="56dp"
             android:weightSum="7"
             >
             <org.jakelcode.schedule.ui.CheckableButton
