@@ -34,6 +34,11 @@ public class Utils {
         cal.set(Calendar.MONTH, month);
         cal.set(Calendar.DAY_OF_MONTH, day);
 
+        // Make the millis cleaner
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+
         return cal.getTimeInMillis();
     }
 
@@ -42,6 +47,7 @@ public class Utils {
         cal.setTimeInMillis(System.currentTimeMillis());
         cal.set(Calendar.HOUR_OF_DAY, hours);
         cal.set(Calendar.MINUTE, minutes);
+        cal.set(Calendar.SECOND, 0); // Make the millis cleaner
 
         return cal.getTimeInMillis();
     }

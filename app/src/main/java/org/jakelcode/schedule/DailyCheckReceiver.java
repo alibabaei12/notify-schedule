@@ -35,6 +35,7 @@ public class DailyCheckReceiver extends WakefulBroadcastReceiver {
         startWakefulService(context, serviceIntent);
     }
 
+    // The alarm that is set on every 00:00 to check for schedules for the day.
     public void setDailyAlarm(Context c) {
         AlarmManager mAlarmManager = (AlarmManager) c.getSystemService(Context.ALARM_SERVICE);
 
@@ -54,12 +55,6 @@ public class DailyCheckReceiver extends WakefulBroadcastReceiver {
 
     public void removeDailyAlarm(Context c) {
         AlarmManager mAlarmManager = (AlarmManager) c.getSystemService(Context.ALARM_SERVICE);
-
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(System.currentTimeMillis());
-        cal.set(Calendar.HOUR, 0);
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.AM_PM, Calendar.AM);
 
         Intent intent = new Intent(c, DailyCheckReceiver.class);
         intent.setAction(ACTION_DAILY_CHECK);

@@ -92,15 +92,6 @@ public class MainActivity extends ActionBarActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            Intent checkReceiverIntent = new Intent(mAppContext, DailyCheckReceiver.class);
-            checkReceiverIntent.setAction(DailyCheckReceiver.ACTION_DAILY_CHECK);
-            sendBroadcast(checkReceiverIntent);
-
-            return true;
-        }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -125,13 +116,13 @@ public class MainActivity extends ActionBarActivity {
 
             setDailyCheckService(true);
         } else {
-            // Cancel daily check service if no alarm exists
+            // Disable daily check service if no alarm exists
             setDailyCheckService(false);
         }
 
         ScheduleAdapter adapter = new ScheduleAdapter(mAppContext, d.getScheduleList());
         if (mRecyclerView.getAdapter() != null) {
-            mRecyclerView.swapAdapter(adapter, true);
+            mRecyclerView.swapAdapter(adapter, false);
         } else {
             mRecyclerView.setAdapter(adapter);
         }
@@ -147,10 +138,6 @@ public class MainActivity extends ActionBarActivity {
         }
 
         if (enable) {
-            Intent checkReceiverIntent = new Intent();
-            checkReceiverIntent.setAction(DailyCheckReceiver.ACTION_DAILY_CHECK);
-            sendBroadcast(checkReceiverIntent);
-
             mDailyCheckReceiver.setDailyAlarm(mAppContext);
         } else {
             mDailyCheckReceiver.removeDailyAlarm(mAppContext);

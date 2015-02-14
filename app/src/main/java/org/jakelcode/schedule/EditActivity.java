@@ -6,11 +6,13 @@ import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -96,9 +98,10 @@ public class EditActivity extends ActionBarActivity {
             mLocationText.setText(model.getLocation());
             mStartTimeText.setText(Utils.formatShowTime(mAppContext, mStartHour, mStartMinute));
             mEndTimeText.setText(Utils.formatShowTime(mAppContext, mEndHour, mEndMinute));
-            mStartTermText.setText(Utils.formatShowDate(mAppContext, mStartTerm));
-            mEndTermText.setText(Utils.formatShowDate(mAppContext, mEndTerm));
-
+            if (mStartTerm != -1) {
+                mStartTermText.setText(Utils.formatShowDate(mAppContext, mStartTerm));
+                mEndTermText.setText(Utils.formatShowDate(mAppContext, mEndTerm));
+            }
             // Render days.
             if (!mRepeatDays.equals("-1")) {
                 String[] parts = mRepeatDays.split(",");
@@ -153,7 +156,11 @@ public class EditActivity extends ActionBarActivity {
         if (id == R.id.menu_action_save) {
             if (validateData()) {
                 boolean newData = (mUniqueId == -1);
+
+                // Save data
                 saveData(newData);
+
+                // End this Activity.
                 finish();
             }
         } else if (id == R.id.menu_action_delete) {
@@ -162,7 +169,10 @@ public class EditActivity extends ActionBarActivity {
                     .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            // Remove data from database
                             deleteData();
+
+                            // End this activity
                             finish();
                         }
                     })
@@ -180,7 +190,6 @@ public class EditActivity extends ActionBarActivity {
 
     @Override
     public boolean onSupportNavigateUp() {
-        //TODO if data has been modified send a confirmation
         return super.onSupportNavigateUp();
     }
 
@@ -210,24 +219,36 @@ public class EditActivity extends ActionBarActivity {
         return true;
     }
 
+    /**
+     * Delete the current data from database and remove alarm for the schedule.
+     */
     public void deleteData() {
         mRealm.beginTransaction();
         Schedule realmSchedule = mRealm.where(Schedule.class)
                 .equalTo("uniqueId", mUniqueId).findFirst();
-
         realmSchedule.removeFromRealm();
-
         mRealm.commitTransaction();
+
+        // Remove alarm from notifyReceiver
+        NotifyReceiver notifyReceiver = new NotifyReceiver();
+        notifyReceiver.removeAlarm(mAppContext, mUniqueId);
     }
 
+    /**
+     * Save current data to database or update it and activate the alarm for the schedule.
+     *
+     * @param newData if true then create new object in db else update
+     */
     public void saveData(boolean newData) {
         mRealm.beginTransaction();
-
         Schedule realmSchedule;
         if (newData) {
             //Create object for new data and generate uid
             realmSchedule = mRealm.createObject(Schedule.class);
-            realmSchedule.setUniqueId(ScheduleUID.get());
+
+            // Generate UniqueID
+            mUniqueId = ScheduleUID.get();
+            realmSchedule.setUniqueId(mUniqueId);
         } else {
             //Fetch the information from database and identify by unique id
             realmSchedule = mRealm.where(Schedule.class)
@@ -244,8 +265,17 @@ public class EditActivity extends ActionBarActivity {
         realmSchedule.setEndMinute(mEndMinute);
         realmSchedule.setDays(getRepeatingDays());
         realmSchedule.setDisableMillis(-1);
-
         mRealm.commitTransaction();
+
+        // Activate this schedule
+        // If the time of this schedule already past, then DailyCheckService will handle it for the next day.
+        NotifyReceiver notifyReceiver = new NotifyReceiver();
+        long startTimeMillis = Utils.getTimeMillis(mStartHour, mStartMinute);
+        long endTimeMillis = Utils.getTimeMillis(mEndHour, mEndMinute);
+
+        if (System.currentTimeMillis() < endTimeMillis) {
+            notifyReceiver.addAlarm(mAppContext, mUniqueId, startTimeMillis, endTimeMillis);
+        }
     }
 
     private String getRepeatingDays() {
@@ -329,7 +359,7 @@ public class EditActivity extends ActionBarActivity {
             c.set(Calendar.MONTH, month);
             c.set(Calendar.DAY_OF_MONTH, day);
 
-            // Make the millis, fair
+            // Make the millis fair
             c.set(Calendar.HOUR_OF_DAY, 0);
             c.set(Calendar.MINUTE, 0);
             listener.onDateReceive(c.getTimeInMillis(), year, month, day);

@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 
 public class ScheduleUID {
-    private static AtomicLong id = new AtomicLong();
+    private static AtomicLong id = new AtomicLong(0);
 
     public static void set(long initialValue) {
         id.set(initialValue);

@@ -1,9 +1,12 @@
 package org.jakelcode.schedule;
 
 import android.app.IntentService;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 /**
@@ -19,6 +22,15 @@ public class NotifyService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         final String dataString = intent.getDataString();
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationCompat.Builder nBuilder = new NotificationCompat.Builder(getApplicationContext())
+                .setSmallIcon(R.drawable.ic_alarm_grey600_24dp)
+                .setContentTitle("Schedule Ring [NotifyService] : ")
+                .setContentText("Data : " + dataString)
+                .setAutoCancel(true);
+
+        notificationManager.notify(23442, nBuilder.build());
 
         AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 
