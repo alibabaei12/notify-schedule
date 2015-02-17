@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v4.content.WakefulBroadcastReceiver;
 import android.util.Log;
 
@@ -41,13 +42,12 @@ public class DailyCheckReceiver extends WakefulBroadcastReceiver {
 
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(System.currentTimeMillis());
-        cal.set(Calendar.HOUR, 0);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.AM_PM, Calendar.AM);
 
         Intent intent = new Intent(c, DailyCheckReceiver.class);
         intent.setAction(ACTION_DAILY_CHECK);
-
+        intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
         PendingIntent pendingIntent = PendingIntent.getService(c, 0, intent, 0);
 
         mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
@@ -58,6 +58,7 @@ public class DailyCheckReceiver extends WakefulBroadcastReceiver {
 
         Intent intent = new Intent(c, DailyCheckReceiver.class);
         intent.setAction(ACTION_DAILY_CHECK);
+        intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
 
         PendingIntent pendingIntent = PendingIntent.getService(c, 0, intent, 0);
 

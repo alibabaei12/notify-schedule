@@ -132,8 +132,10 @@ public class EditActivity extends ActionBarActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_edit, menu);
 
+        // Only shows the delete button when it's in edit mode.
         boolean isEditMode = (mUniqueId != -1);
         menu.findItem(R.id.menu_action_delete).setVisible(isEditMode);
+
         return true;
     }
 
@@ -289,6 +291,8 @@ public class EditActivity extends ActionBarActivity {
 
     @OnClick({R.id.edit_time_start_text, R.id.edit_time_end_text})
     public void promptClock(final View v) {
+        Utils.hideKeyboard(this);
+
         TimePickerFragment newFragment = new TimePickerFragment();
         newFragment.setListener(new TimePickerFragment.Listener() {
             @Override
@@ -309,6 +313,8 @@ public class EditActivity extends ActionBarActivity {
 
     @OnClick({R.id.edit_term_start_text, R.id.edit_term_end_text})
     public void promptCalendar(final View v) {
+        Utils.hideKeyboard(this);
+
         DatePickerFragment newFragment = new DatePickerFragment();
         newFragment.setListener(new DatePickerFragment.Listener() {
             @Override

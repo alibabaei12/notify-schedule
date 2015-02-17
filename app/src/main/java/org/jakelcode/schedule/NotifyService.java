@@ -26,10 +26,9 @@ public class NotifyService extends IntentService {
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         NotificationCompat.Builder nBuilder = new NotificationCompat.Builder(getApplicationContext())
                 .setSmallIcon(R.drawable.ic_alarm_grey600_24dp)
-                .setContentTitle("Schedule Ring [NotifyService] : ")
+                .setContentTitle("[NotifyService] Ring ring : ")
                 .setContentText("Data : " + dataString)
                 .setAutoCancel(true);
-
         notificationManager.notify(23442, nBuilder.build());
 
         AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);

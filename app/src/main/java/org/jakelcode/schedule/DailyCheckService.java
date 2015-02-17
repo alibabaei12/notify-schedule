@@ -7,6 +7,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import org.jakelcode.schedule.realm.Schedule;
@@ -54,9 +55,16 @@ public class DailyCheckService extends IntentService {
                     .endGroup()
                     .findAll();
 
+            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationCompat.Builder nBuilder = new NotificationCompat.Builder(getApplicationContext())
+                    .setSmallIcon(R.drawable.ic_alarm_grey600_24dp)
+                    .setContentTitle("[DailyCheckService] Adding new alarm")
+                    .setContentText("Size : " + realmResults.size())
+                    .setAutoCancel(true);
+            notificationManager.notify(23242, nBuilder.build());
+
             long startTimeMillis;
             long endTimeMillis;
-            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
             for (Schedule s : realmResults) {
                 if (s.getDays().contains(Integer.toString(curDay)) || s.getDays().equals("-1")) { // If it is active today
@@ -75,15 +83,6 @@ public class DailyCheckService extends IntentService {
                     calendar.set(Calendar.MINUTE, s.getEndMinute());
                     calendar.set(Calendar.SECOND, 0);
                     endTimeMillis = calendar.getTimeInMillis();
-
-                    Notification notification = new Notification.Builder(mAppContext)
-                            .setSmallIcon(R.drawable.ic_alarm_grey600_24dp)
-                            .setContentTitle("Add Schedule ID : " + s.getUniqueId())
-                            .setContentText("Start Time : " + Utils.formatShowTime(mAppContext, startTimeMillis))
-                            .setAutoCancel(true)
-                            .build();
-
-                    notificationManager.notify(12243, notification);
 
                     notifyReceiver.addAlarm(this, s.getUniqueId(), startTimeMillis, endTimeMillis);
                 }

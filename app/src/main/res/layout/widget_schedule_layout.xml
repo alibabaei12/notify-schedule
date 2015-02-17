@@ -9,8 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="36dp"
         android:src="@color/light_blue_700"
-        android:contentDescription="@string/empty"
-        />
+        android:contentDescription="@string/empty"/>
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

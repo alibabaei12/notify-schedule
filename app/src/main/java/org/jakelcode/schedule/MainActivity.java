@@ -42,7 +42,6 @@ public class MainActivity extends ActionBarActivity {
     @Inject Context mAppContext;
     @Inject JobManager mJobManager;
     @Inject SharedPreferences mPreferences;
-    private DailyCheckReceiver mDailyCheckReceiver = new DailyCheckReceiver();
 
     @InjectView(R.id.schedule_recycle_view) RecyclerView mRecyclerView;
     @InjectView(R.id.schedule_fab_add) FloatingActionButton mFloatActionButton;
@@ -65,11 +64,13 @@ public class MainActivity extends ActionBarActivity {
 
         //Initialize empty adapters, no listener cause no cards there.
         setupRecycleView(new ScheduleAdapter(mAppContext, new ArrayList<ScheduleCache>()));
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+
         mJobManager.addJobInBackground(new LoadingScheduleJob(this));
     }
 
@@ -118,11 +119,42 @@ public class MainActivity extends ActionBarActivity {
             setDailyCheckService(false);
         }
 
-        ScheduleAdapter adapter = new ScheduleAdapter(mAppContext, d.getScheduleList());
-        if (mRecyclerView.getAdapter() != null) {
-            mRecyclerView.swapAdapter(adapter, false);
+        ScheduleAdapter newAdapter = new ScheduleAdapter(mAppContext, d.getScheduleList());
+        if (mRecyclerView.getAdapter().getItemCount() > 0) {
+            ScheduleAdapter oldAdapter = (ScheduleAdapter) mRecyclerView.getAdapter();
+
+            if (newAdapter.getItemCount() > oldAdapter.getItemCount()) {
+                for (int i = 0; i < newAdapter.getItemCount(); i++) {
+                    // Comparing two items in parallel
+                    if (i == oldAdapter.getItemCount() ||
+                            newAdapter.getItem(i).getUniqueId() != oldAdapter.getItem(i).getUniqueId()) {
+                        oldAdapter.getModelList().add(i, newAdapter.getItem(i));
+                        oldAdapter.notifyItemInserted(i);
+                        break; // Because only 1 new card can be added
+                    }
+                }
+            } else if (newAdapter.getItemCount() < oldAdapter.getItemCount()) {
+                for (int i = 0; i < oldAdapter.getItemCount(); i++) {
+                    // Comparing two items in parallel
+                    if (i == newAdapter.getItemCount() ||
+                            newAdapter.getItem(i).getUniqueId() != oldAdapter.getItem(i).getUniqueId()) {
+                        oldAdapter.getModelList().remove(i);
+                        oldAdapter.notifyItemRemoved(i);
+                        break; // Currently, only able to remove 1 card
+                    }
+                }
+            } else { // Same length, data edit.
+                for (int i = 0; i < newAdapter.getItemCount(); i++) {
+                    if (newAdapter.getItem(i) != oldAdapter.getItem(i)) {
+                        oldAdapter.getModelList().set(i, newAdapter.getItem(i));
+
+                        oldAdapter.notifyItemChanged(i);
+                        break; // Only change 1 card each time
+                    }
+                }
+            }
         } else {
-            mRecyclerView.setAdapter(adapter);
+            mRecyclerView.setAdapter(newAdapter);
         }
     }
 
@@ -134,10 +166,12 @@ public class MainActivity extends ActionBarActivity {
             return;
         }
 
+        final DailyCheckReceiver dailyReceiver = new DailyCheckReceiver();
+
         if (enable) {
-            mDailyCheckReceiver.setDailyAlarm(mAppContext);
+            dailyReceiver.setDailyAlarm(mAppContext);
         } else {
-            mDailyCheckReceiver.removeDailyAlarm(mAppContext);
+            dailyReceiver.removeDailyAlarm(mAppContext);
         }
 
         mPreferences.edit().putBoolean(Utils.PREF_DAILY_CHECK, enable).apply();
@@ -172,6 +206,14 @@ public class MainActivity extends ActionBarActivity {
             mModelList = models;
 
             setHasStableIds(true);
+        }
+
+        public List<ScheduleCache> getModelList() {
+            return mModelList;
+        }
+
+        public ScheduleCache getItem(int pos) {
+            return mModelList.get(pos);
         }
 
         @Override
