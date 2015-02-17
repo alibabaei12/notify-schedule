@@ -2,6 +2,7 @@ package org.jakelcode.schedule;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.IntDef;
 
 import org.jakelcode.schedule.realm.Schedule;
 
@@ -90,6 +91,27 @@ public class ScheduleCache implements Parcelable {
 
     public String getDays() {
         return days;
+    }
+
+
+    @IntDef({NORMAL, EXPIRED, FUTURE, DISABLED})
+    public @interface ScheduleType{}
+
+    public static final int NORMAL = 0;
+    public static final int EXPIRED = 1;
+    public static final int FUTURE = 2;
+    public static final int DISABLED = 3;
+
+    @ScheduleType
+    public int getType() {
+        if (System.currentTimeMillis() > endTerm) {
+            return EXPIRED;
+        } else if (System.currentTimeMillis() < startTerm) {
+            return FUTURE;
+        } else if (disableMillis > -1) {
+            return DISABLED;
+        }
+        return NORMAL;
     }
 
     //Parcelable implementation

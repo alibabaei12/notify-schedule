@@ -51,14 +51,6 @@ public class EditActivity extends ActionBarActivity {
     @InjectView(R.id.edit_term_end_text) MaterialEditText mEndTermText;
     @InjectView(R.id.edit_location_text) MaterialEditText mLocationText;
 
-    @InjectView(R.id.edit_days_sun) CheckableButton mRepeatSun;
-    @InjectView(R.id.edit_days_m) CheckableButton mRepeatMon;
-    @InjectView(R.id.edit_days_t) CheckableButton mRepeatTues;
-    @InjectView(R.id.edit_days_w) CheckableButton mRepeatWed;
-    @InjectView(R.id.edit_days_th) CheckableButton mRepeatThurs;
-    @InjectView(R.id.edit_days_f) CheckableButton mRepeatFri;
-    @InjectView(R.id.edit_days_sat) CheckableButton mRepeatSat;
-
     @InjectViews({R.id.edit_days_sun, R.id.edit_days_m, R.id.edit_days_t, R.id.edit_days_w,
             R.id.edit_days_th, R.id.edit_days_f, R.id.edit_days_sat})
     List<CheckableButton> mRepeatDayList;

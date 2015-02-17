@@ -1,7 +1,11 @@
 package org.jakelcode.schedule;
 
+import android.app.Activity;
+import android.app.Service;
 import android.content.Context;
 import android.text.format.DateUtils;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import java.util.Calendar;
 
@@ -10,6 +14,12 @@ import java.util.Calendar;
  */
 public class Utils {
     public static final String PARCEL_SCHEDULE = "parcel_schedule";
+    // Prefs...
+    public static final String PREF_DAILY_CHECK = "pref-daily-check"; // True = Daily Check Alarm set.
+    public static final String PREF_INTERRUPT = "pref-interrupt";  // True = Schedule works in Silent.
+    public static final String PREF_NOTIFICATION_MINUTE = "pref-notification-minutes"; // 10 = 10 minutes notification prior schedule.
+    // Prefs colors legend
+    public static final String PREF_COLORS = "pref-main-colors";
 
     public static String formatShowDate(Context c, long millis) {
         return DateUtils.formatDateTime(c, millis, DateUtils.FORMAT_SHOW_DATE);
@@ -50,5 +60,10 @@ public class Utils {
         cal.set(Calendar.SECOND, 0); // Make the millis cleaner
 
         return cal.getTimeInMillis();
+    }
+
+    public static void hideKeyboard(Activity activity) {
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Service.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(activity.getWindow().getDecorView().getRootView().getWindowToken(), 0);
     }
 }

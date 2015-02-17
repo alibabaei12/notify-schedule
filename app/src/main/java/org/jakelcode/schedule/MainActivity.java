@@ -37,8 +37,6 @@ import me.grantland.widget.AutofitHelper;
 
 public class MainActivity extends ActionBarActivity {
     private static final String TAG = MainActivity.class.getName();
-    private static final String PREF_DAILY_CHECK = "daily-check";
-
 
     @Inject EventBus mEventBus;
     @Inject Context mAppContext;
@@ -129,11 +127,10 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void setDailyCheckService(boolean enable) {
-        final boolean dailyServiceActive = mPreferences.getBoolean(PREF_DAILY_CHECK, false);
+        final boolean dailyServiceActive = mPreferences.getBoolean(Utils.PREF_DAILY_CHECK, false);
 
-        // If preferences is disable and asking to disable = return or
-        // If preference is enable and asking to enable = return
-        if ((!dailyServiceActive && !enable) || (dailyServiceActive && enable)) {
+        // Return if the setting is same as what will be set.
+        if (dailyServiceActive == enable) {
             return;
         }
 
@@ -143,7 +140,7 @@ public class MainActivity extends ActionBarActivity {
             mDailyCheckReceiver.removeDailyAlarm(mAppContext);
         }
 
-        mPreferences.edit().putBoolean(PREF_DAILY_CHECK, enable).apply();
+        mPreferences.edit().putBoolean(Utils.PREF_DAILY_CHECK, enable).apply();
     }
 
     @OnClick(R.id.schedule_fab_add)
