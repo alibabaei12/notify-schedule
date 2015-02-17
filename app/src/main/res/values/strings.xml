@@ -26,4 +26,7 @@
     <string name="short_friday">F</string>
     <string name="short_saturday">S</string>
     <string name="action_save">Save</string>
+
+    <string name="empty">Empty</string>
+    <string name="add_widget">Add widget</string>
 </resources>

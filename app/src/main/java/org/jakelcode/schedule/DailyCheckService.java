@@ -66,6 +66,11 @@ public class DailyCheckService extends IntentService {
                     calendar.set(Calendar.SECOND, 0);
                     startTimeMillis = calendar.getTimeInMillis();
 
+                    // Skip if it's already past.
+                    if (System.currentTimeMillis() > startTimeMillis) {
+                        continue;
+                    }
+
                     calendar.set(Calendar.HOUR_OF_DAY, s.getEndHour());
                     calendar.set(Calendar.MINUTE, s.getEndMinute());
                     calendar.set(Calendar.SECOND, 0);

@@ -162,23 +162,24 @@ public class MainActivity extends ActionBarActivity {
 
             ButterKnife.inject(this, itemView);
         }
+
     }
 
     public final class ScheduleAdapter extends RecyclerView.Adapter<ScheduleViewHolder> {
         private final List<ScheduleCache> mModelList;
         private final Context mContext;
 
+
         public ScheduleAdapter(Context c, List<ScheduleCache> models) {
             mContext = c;
             mModelList = models;
+
+            setHasStableIds(true);
         }
 
-        public List<ScheduleCache> getModelList() {
-            return mModelList;
-        }
-
-        public ScheduleCache getModel(int pos) {
-            return mModelList.get(pos);
+        @Override
+        public long getItemId(int position) {
+            return mModelList.get(position).getUniqueId();
         }
 
         @Override
@@ -202,7 +203,6 @@ public class MainActivity extends ActionBarActivity {
 
             return new ScheduleViewHolder(itemView);
         }
-
 
         @Override
         public void onBindViewHolder(ScheduleViewHolder holder, int position) {

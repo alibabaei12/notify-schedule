@@ -16,4 +16,10 @@
     <dimen name="button_width_small">42dp</dimen>
     <dimen name="long_toolbar_height">232dp</dimen>
     <dimen name="long_toolbar_height_with_margin">248dp</dimen>
+
+    <!--
+Refer to App Widget Documentation for margin information
+http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
+    -->
+    <dimen name="widget_margin">8dp</dimen>
 </resources>
