@@ -145,8 +145,7 @@
         <!-- Layout for repeating days. Margin : 72 - 16-->
         <org.jakelcode.schedule.ui.FoldLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/pink_50">
+            android:layout_height="wrap_content">
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"

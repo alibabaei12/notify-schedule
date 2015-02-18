@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.path.android.jobqueue.JobManager;
 
+import org.jakelcode.schedule.EditActivity;
 import org.jakelcode.schedule.MainActivity;
 import org.jakelcode.schedule.R;
 import org.jakelcode.schedule.ScheduleCache;
@@ -91,6 +92,11 @@ public class ScheduleWidget extends AppWidgetProvider {
                 PendingIntent.FLAG_UPDATE_CURRENT);
         rv.setPendingIntentTemplate(R.id.widget_list_view, toastPendingIntent);
 
+        Intent newIntent = new Intent(context, EditActivity.class);
+        PendingIntent pendingNewIntent = PendingIntent.getActivity(context, 0, newIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        rv.setOnClickPendingIntent(R.id.widget_schedule_add_button, pendingNewIntent);
+
         appWidgetManager.updateAppWidget(appWidgetId, rv);
     }
 
@@ -107,7 +113,6 @@ public class ScheduleWidget extends AppWidgetProvider {
     }
 
     static class ScheduleWidgetFactory implements RemoteViewsService.RemoteViewsFactory {
-        private static final int mCount = 10;
         private static final String TAG = ScheduleWidgetFactory.class.getName();
         private List<ScheduleCache> mItems = new ArrayList<>();
         private Context mContext;
@@ -183,10 +188,10 @@ public class ScheduleWidget extends AppWidgetProvider {
 
             Intent fillInIntent = new Intent();
             fillInIntent.putExtras(extras);
+
             // Make it possible to distinguish the individual on-click
             // action of a given item
             remoteViews.setOnClickFillInIntent(R.id.widget_schedule_item_layout, fillInIntent);
-
             return remoteViews;
         }
 
