@@ -12,7 +12,9 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.format.DateUtils;
 import android.util.Log;
+import android.util.TimeUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -266,8 +268,7 @@ public class EditActivity extends ActionBarActivity {
         NotifyReceiver notifyReceiver = new NotifyReceiver();
         long startTimeMillis = Utils.getTimeMillis(mStartHour, mStartMinute);
         long endTimeMillis = Utils.getTimeMillis(mEndHour, mEndMinute);
-
-        if (System.currentTimeMillis() < endTimeMillis) {
+        if (System.currentTimeMillis() < endTimeMillis && DateUtils.isToday(mStartTerm)) {
             notifyReceiver.addAlarm(mAppContext, mUniqueId, startTimeMillis, endTimeMillis);
         }
     }
