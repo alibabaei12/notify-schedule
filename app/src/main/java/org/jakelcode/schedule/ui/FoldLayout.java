@@ -1,27 +1,23 @@
 package org.jakelcode.schedule.ui;
 
-import android.animation.Animator;
-import android.animation.ValueAnimator;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Canvas;
-import android.support.annotation.NonNull;
+import android.os.Build;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
-import android.view.animation.Animation;
 import android.widget.Checkable;
 import android.widget.FrameLayout;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Pin Khe "Jake" Loo (11 February, 2015)
  */
 public class FoldLayout extends FrameLayout implements Checkable {
     private static final String TAG = FoldLayout.class.getName();
-
-    private boolean mChecked;
+    private boolean mHideChild;
 
     public FoldLayout(Context context) {
         super(context);
@@ -51,79 +47,61 @@ public class FoldLayout extends FrameLayout implements Checkable {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
+    }
 
-        for (int i = 0; i < getChildCount(); i++) {
-            final View v = getChildAt(i);
+    @Override
+    public void setChecked(boolean checked) {
+        if (mHideChild != checked) {
+            this.mHideChild = checked;
 
-            v.animate().setListener(new Animator.AnimatorListener() {
+            animateChild();
+            invalidate();
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    public void animateChild() {
+        for (int i = 0 ; i < getChildCount(); i ++) {
+            final View child = getChildAt(i);
+
+            child.animate().y(mHideChild ? -child.getTop() : child.getTop())
+            .withStartAction(new Runnable() {
+
                 @Override
-                public void onAnimationStart(Animator animation) {
-                    if (isChecked()) {
-                        v.setVisibility(View.VISIBLE);
+                public void run() {
+                    if (!mHideChild) {
+                        child.setVisibility(View.VISIBLE);
                     }
                 }
-
+            })
+            .withEndAction(new Runnable() {
                 @Override
-                public void onAnimationEnd(Animator animation) {
-                    if (!isChecked()) {
-                        v.setVisibility(View.INVISIBLE);
+                public void run() {
+                    if (mHideChild) {
+                        child.setVisibility(View.INVISIBLE);
                     }
-                }
-
-                @Override
-                public void onAnimationCancel(Animator animation) {
-                    if (!isChecked()) {
-                        v.setVisibility(View.INVISIBLE);
-                    }
-                }
-
-                @Override
-                public void onAnimationRepeat(Animator animation) {
-
                 }
             });
         }
     }
 
     @Override
-    public void setChecked(boolean checked) {
-        if (mChecked != checked) {
-            this.mChecked = checked;
-            invalidate();
-        }
-    }
-
-    @Override
     public boolean isChecked() {
-        return mChecked;
+        return mHideChild;
     }
 
     @Override
     public void toggle() {
-        setChecked(!mChecked);
+        setChecked(!mHideChild);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
-//        for (int i = 0 ; i < getChildCount(); i ++) {
-//            getChildAt(i).animate().translationY(mChecked ? 100 : -100);
-//        }
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-
-//        int wspec = MeasureSpec.makeMeasureSpec(
-//                getMeasuredWidth(), MeasureSpec.EXACTLY);
-//        int hspec = MeasureSpec.makeMeasureSpec(
-//                getMeasuredHeight(), MeasureSpec.EXACTLY);
-//        for(int i=0; i<getChildCount(); i++){
-//            View v = getChildAt(i);
-//            v.measure(wspec, hspec);
-//        }
-
     }
 }

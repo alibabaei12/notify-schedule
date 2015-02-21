@@ -104,7 +104,7 @@ public class ScheduleCache implements Parcelable {
 
     @ScheduleType
     public int getType() {
-        if (System.currentTimeMillis() > endTerm) {
+        if (endTerm > 0 && System.currentTimeMillis() > endTerm) {
             return EXPIRED;
         } else if (System.currentTimeMillis() < startTerm) {
             return FUTURE;

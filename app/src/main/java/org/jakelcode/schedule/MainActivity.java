@@ -228,6 +228,7 @@ public class MainActivity extends ActionBarActivity {
                     from(parent.getContext()).
                     inflate(R.layout.view_schedule_card, parent, false);
 
+
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -257,6 +258,24 @@ public class MainActivity extends ActionBarActivity {
 
             holder.time.setText(Utils.formatShowTime(mContext, model.getStartHour(), model.getStartMinute()) + " ~ "
                     + Utils.formatShowTime(mContext, model.getEndHour(), model.getEndMinute()));
+
+            // Colors the card by its type.
+            switch (model.getType()) {
+                case ScheduleCache.NORMAL:
+
+                    holder.itemView.setBackgroundResource(R.color.green_100);
+                    break;
+                case ScheduleCache.EXPIRED:
+                    holder.itemView.setBackgroundResource(R.color.red_100);
+                    break;
+                case ScheduleCache.DISABLED:
+                    holder.itemView.setBackgroundResource(R.color.blue_100);
+                    break;
+                case ScheduleCache.FUTURE:
+                    holder.itemView.setBackgroundResource(R.color.yellow_100);
+                    break;
+                default: break;
+            }
         }
 
         @Override

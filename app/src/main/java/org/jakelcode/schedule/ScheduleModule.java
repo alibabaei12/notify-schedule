@@ -12,7 +12,6 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import de.greenrobot.event.EventBus;
-import io.realm.Realm;
 
 /**
  * @author Pin Khe "Jake" Loo (11 January, 2015)
@@ -24,7 +23,8 @@ import io.realm.Realm;
                 SettingActivity.class,
 
                 LoadingScheduleJob.class,
-                DailyCheckService.class
+                DailyCheckService.class,
+                ScheduleTypePalette.class
         }
 )
 public class ScheduleModule {
@@ -58,6 +58,12 @@ public class ScheduleModule {
     @Singleton
     SharedPreferences provideSharedPreferences() {
         return application.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
+    }
+
+    @Provides
+    @Singleton
+    ScheduleTypePalette provideScheduleTypePalette(SharedPreferences s) {
+        return new ScheduleTypePalette(s);
     }
 
 }
