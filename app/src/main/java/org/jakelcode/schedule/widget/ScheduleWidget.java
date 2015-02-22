@@ -135,26 +135,9 @@ public class ScheduleWidget extends AppWidgetProvider {
 
         @Override
         public void onCreate() {
-            Realm mRealm = null;
-            try {
-                mRealm = Realm.getInstance(mContext);
+            List<ScheduleCache> results = loadFromDatabase();
 
-                // Loading Schedule from database
-                RealmResults<Schedule> results = mRealm.where(Schedule.class).findAll();
-
-                // Sort it descending, so the latest ones will be displayed on top
-                // Also it is easier to obtain the last uniqueId exists in the database
-                results.sort("uniqueId", RealmResults.SORT_ORDER_DESCENDING);
-
-                for (Schedule s : results) {
-                    mItems.add(new ScheduleCache(s));
-                }
-
-            } finally {
-                if (mRealm != null) {
-                    mRealm.close();
-                }
-            }
+            mItems.addAll(results);
         }
 
         @Override
@@ -165,27 +148,10 @@ public class ScheduleWidget extends AppWidgetProvider {
             // from the network, etc., it is ok to do it here, synchronously. The widget will remain
             // in its current state while work is being done here, so you don't need to worry about
             // locking up the widget.
-            Realm mRealm = null;
-            try {
-                mRealm = Realm.getInstance(mContext);
+            List<ScheduleCache> results = loadFromDatabase();
 
-                // Loading Schedule from database
-                RealmResults<Schedule> results = mRealm.where(Schedule.class).findAll();
-
-                // Sort it descending, so the latest ones will be displayed on top
-                // Also it is easier to obtain the last uniqueId exists in the database
-                results.sort("uniqueId", RealmResults.SORT_ORDER_DESCENDING);
-
-                mItems.clear();
-                for (Schedule s : results) {
-                    mItems.add(new ScheduleCache(s));
-                }
-
-            } finally {
-                if (mRealm != null) {
-                    mRealm.close();
-                }
-            }
+            mItems.clear();
+            mItems.addAll(results);
         }
 
         @Override
@@ -242,6 +208,33 @@ public class ScheduleWidget extends AppWidgetProvider {
         @Override
         public boolean hasStableIds() {
             return true;
+        }
+
+        public List<ScheduleCache> loadFromDatabase() {
+            List<ScheduleCache> results = new ArrayList<ScheduleCache>();
+
+            Realm mRealm = null;
+            try {
+                mRealm = Realm.getInstance(mContext);
+
+                // Loading Schedule from database
+                RealmResults<Schedule> realmResults = mRealm.where(Schedule.class).findAll();
+
+                // Sort it descending, so the latest ones will be displayed on top
+                // Also it is easier to obtain the last uniqueId exists in the database
+                realmResults.sort("uniqueId", RealmResults.SORT_ORDER_DESCENDING);
+
+                for (Schedule s : realmResults) {
+                    results.add(new ScheduleCache(s));
+                }
+
+            } finally {
+                if (mRealm != null) {
+                    mRealm.close();
+                }
+            }
+
+            return results;
         }
     }
 

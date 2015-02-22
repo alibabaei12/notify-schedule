@@ -163,12 +163,12 @@ public class MainActivity extends ActionBarActivity {
                     }
                 }
             }
-
-            // Update widget
-            ScheduleWidget.notifyDataChange(mAppContext);
         } else {
             mRecyclerView.setAdapter(newAdapter);
         }
+
+        // Update widget
+        ScheduleWidget.notifyDataChange(mAppContext);
     }
 
     public void setDailyCheckService(boolean enable) {
