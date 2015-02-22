@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.melnykov.fab.FloatingActionButton;
@@ -92,7 +93,15 @@ public class MainActivity extends ActionBarActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
+//
+//        switch (id) {
+//            case R.id.debug_add_daily:
+//                setDailyCheckService(true, true);
+//                break;
+//            case R.id.debug_remove_daily:
+//                setDailyCheckService(false, true);
+//                break;
+//        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -161,13 +170,6 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void setDailyCheckService(boolean enable) {
-        final boolean dailyServiceActive = mPreferences.getBoolean(Utils.PREF_DAILY_CHECK, false);
-
-        // Return if the setting is same as what will be set.
-        if (dailyServiceActive == enable) {
-            return;
-        }
-
         final DailyCheckReceiver dailyReceiver = new DailyCheckReceiver();
 
         if (enable) {
@@ -175,8 +177,6 @@ public class MainActivity extends ActionBarActivity {
         } else {
             dailyReceiver.removeDailyAlarm(mAppContext);
         }
-
-        mPreferences.edit().putBoolean(Utils.PREF_DAILY_CHECK, enable).apply();
     }
 
     @OnClick(R.id.schedule_fab_add)

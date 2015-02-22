@@ -114,6 +114,48 @@ public class ScheduleCache implements Parcelable {
         return NORMAL;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ScheduleCache)) return false;
+
+        ScheduleCache that = (ScheduleCache) o;
+
+        if (disableMillis != that.disableMillis) return false;
+        if (endHour != that.endHour) return false;
+        if (endMinute != that.endMinute) return false;
+        if (endTerm != that.endTerm) return false;
+        if (startHour != that.startHour) return false;
+        if (startMinute != that.startMinute) return false;
+        if (startTerm != that.startTerm) return false;
+        if (uniqueId != that.uniqueId) return false;
+        if (days != null ? !days.equals(that.days) : that.days != null) return false;
+        if (description != null ? !description.equals(that.description) : that.description != null)
+            return false;
+        if (location != null ? !location.equals(that.location) : that.location != null)
+            return false;
+        if (!title.equals(that.title)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int) (uniqueId ^ (uniqueId >>> 32));
+        result = 31 * result + title.hashCode();
+        result = 31 * result + (location != null ? location.hashCode() : 0);
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (int) (startTerm ^ (startTerm >>> 32));
+        result = 31 * result + (int) (endTerm ^ (endTerm >>> 32));
+        result = 31 * result + startHour;
+        result = 31 * result + startMinute;
+        result = 31 * result + endHour;
+        result = 31 * result + endMinute;
+        result = 31 * result + (int) (disableMillis ^ (disableMillis >>> 32));
+        result = 31 * result + (days != null ? days.hashCode() : 0);
+        return result;
+    }
+
     //Parcelable implementation
     @Override
     public int describeContents() {

@@ -4,13 +4,13 @@
       tools:context=".MainActivity">
 
     <item
-        android:id="@+id/edit_activity"
-        android:title="Edit Activity"
+        android:id="@+id/debug_add_daily"
+        android:title="Add Daily Alarm"
         app:showAsAction="never"/>
 
     <item
-        android:id="@+id/action_settings"
-        android:title="@string/action_settings"
+        android:id="@+id/debug_remove_daily"
+        android:title="Remove Daily Alarm"
         android:orderInCategory="100"
         app:showAsAction="never"/>
 </menu>

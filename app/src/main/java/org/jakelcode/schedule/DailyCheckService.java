@@ -30,7 +30,6 @@ public class DailyCheckService extends IntentService {
         super("daily-check-service");
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onHandleIntent(Intent intent) {
         // Dependency Injection

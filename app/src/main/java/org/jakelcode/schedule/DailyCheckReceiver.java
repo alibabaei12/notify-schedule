@@ -38,17 +38,21 @@ public class DailyCheckReceiver extends WakefulBroadcastReceiver {
 
     // The alarm that is set on every 00:00 to check for schedules for the day.
     public void setDailyAlarm(Context c) {
-        AlarmManager mAlarmManager = (AlarmManager) c.getSystemService(Context.ALARM_SERVICE);
+        // Prevent duplicate daily alarms.
+        removeDailyAlarm(c);
 
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(System.currentTimeMillis());
-        cal.set(Calendar.HOUR_OF_DAY, 0);
-        cal.set(Calendar.MINUTE, 0);
+        AlarmManager mAlarmManager = (AlarmManager) c.getSystemService(Context.ALARM_SERVICE);
 
         Intent intent = new Intent(c, DailyCheckReceiver.class);
         intent.setAction(ACTION_DAILY_CHECK);
         intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
         PendingIntent pendingIntent = PendingIntent.getService(c, 0, intent, 0);
+
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(System.currentTimeMillis());
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
 
         mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
     }
