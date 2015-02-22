@@ -273,10 +273,12 @@ public class EditActivity extends ActionBarActivity {
         // Reset the alarm because the data is changed
         notifyReceiver.removeAlarm(mAppContext, mUniqueId);
 
+
         if ((System.currentTimeMillis() < endTimeMillis) && // Either starts now or later.
-                (System.currentTimeMillis() > mStartTerm && System.currentTimeMillis() < mEndTerm) && // Is in term
+                ((System.currentTimeMillis() > mStartTerm
+                        && System.currentTimeMillis() < mEndTerm) || mStartTerm == -1) && // Is in term
                 mDisableMillis == -1 && // It is NOT disable
-                Utils.isDayOfWeek(mRepeatDays)) { // It is active for today
+                Utils.isDayOfWeek(getRepeatingDays())) { // It is active for today
             notifyReceiver.addAlarm(mAppContext, mUniqueId, startTimeMillis, endTimeMillis);
         }
     }

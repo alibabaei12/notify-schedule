@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.support.v4.content.WakefulBroadcastReceiver;
 import android.util.Log;
@@ -23,7 +24,9 @@ public class DailyCheckReceiver extends WakefulBroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Intent serviceIntent = new Intent(context, DailyCheckService.class);
 
-        if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
+        String action = intent.getAction();
+
+        if (!action.equals(ACTION_DAILY_CHECK)) {
             setDailyAlarm(context);
         }
 
@@ -39,12 +42,16 @@ public class DailyCheckReceiver extends WakefulBroadcastReceiver {
 
         Intent intent = new Intent(c, DailyCheckReceiver.class);
         intent.setAction(ACTION_DAILY_CHECK);
-        PendingIntent pendingIntent = PendingIntent.getService(c, 0, intent, 0);
+        intent.setData(Uri.parse(ACTION_DAILY_CHECK));
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(c, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(System.currentTimeMillis());
         cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 1);
+        cal.set(Calendar.MILLISECOND, 0);
 
         mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
     }
@@ -54,8 +61,9 @@ public class DailyCheckReceiver extends WakefulBroadcastReceiver {
 
         Intent intent = new Intent(c, DailyCheckReceiver.class);
         intent.setAction(ACTION_DAILY_CHECK);
+        intent.setData(Uri.parse(ACTION_DAILY_CHECK));
 
-        PendingIntent pendingIntent = PendingIntent.getService(c, 0, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(c, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
         mAlarmManager.cancel(pendingIntent);
     }
