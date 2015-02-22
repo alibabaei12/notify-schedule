@@ -270,6 +270,9 @@ public class EditActivity extends ActionBarActivity {
         long startTimeMillis = Utils.getTimeMillis(mStartHour, mStartMinute);
         long endTimeMillis = Utils.getTimeMillis(mEndHour, mEndMinute);
 
+        // Reset the alarm because the data is changed
+        notifyReceiver.removeAlarm(mAppContext, mUniqueId);
+
         if ((System.currentTimeMillis() < endTimeMillis) && // Either starts now or later.
                 (System.currentTimeMillis() > mStartTerm && System.currentTimeMillis() < mEndTerm) && // Is in term
                 mDisableMillis == -1 && // It is NOT disable

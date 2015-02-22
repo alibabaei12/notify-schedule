@@ -1,27 +1,24 @@
 package org.jakelcode.schedule;
 
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.melnykov.fab.FloatingActionButton;
@@ -125,7 +122,6 @@ public class MainActivity extends ActionBarActivity {
         if (d.getScheduleList().size() > 0) {
             // Initialize the unique identifier.
             ScheduleUID.set(d.getScheduleList().get(0).getUniqueId());
-
             setDailyCheckService(true);
         } else {
             // Disable daily check service if no alarm exists
@@ -199,7 +195,7 @@ public class MainActivity extends ActionBarActivity {
         @InjectView(R.id.schedule_card_desc) TextView description;
         @InjectView(R.id.schedule_card_time) TextView time;
         @InjectView(R.id.schedule_card_label) ImageView label;
-
+        @InjectView(R.id.schedule_card_switch) SwitchCompat switchView;
         public ScheduleViewHolder(View itemView) {
             super(itemView);
 
@@ -270,6 +266,19 @@ public class MainActivity extends ActionBarActivity {
 
             holder.time.setText(Utils.formatShowTime(mContext, model.getStartHour(), model.getStartMinute()) + " ~ "
                     + Utils.formatShowTime(mContext, model.getEndHour(), model.getEndMinute()));
+
+            if (model.getDisableMillis() > -1) {
+                holder.switchView.setChecked(true);
+            }
+
+            holder.switchView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked) {
+
+                    }
+                }
+            });
 
             // Colors the card by its type.
             switch (model.getType()) {

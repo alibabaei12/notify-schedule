@@ -15,7 +15,7 @@ import android.support.v4.content.WakefulBroadcastReceiver;
  */
 public class NotifyReceiver extends WakefulBroadcastReceiver {
     private static final String TAG = NotifyReceiver.class.getName();
-    private static final String NOTIFY_ACTION = "org.jakelcode.schedule.NOTIFY_ACTION";
+    private static final String NOTIFY_ACTION = "org.jakelcode.schedule.action.NOTIFY_ACTION";
 
     private AlarmManager mAlarmManager;
 

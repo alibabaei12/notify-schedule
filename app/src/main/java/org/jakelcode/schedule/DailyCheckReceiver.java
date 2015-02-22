@@ -21,12 +21,6 @@ public class DailyCheckReceiver extends WakefulBroadcastReceiver {
     // daily alarm -> check and set alarm for the day
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (!intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED) &&
-                !intent.getAction().equals(ACTION_DAILY_CHECK)) {
-            Log.i(TAG, "Invalid Actions : " + intent.getAction());
-            return;
-        }
-
         Intent serviceIntent = new Intent(context, DailyCheckService.class);
 
         if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
@@ -45,9 +39,7 @@ public class DailyCheckReceiver extends WakefulBroadcastReceiver {
 
         Intent intent = new Intent(c, DailyCheckReceiver.class);
         intent.setAction(ACTION_DAILY_CHECK);
-        intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
         PendingIntent pendingIntent = PendingIntent.getService(c, 0, intent, 0);
-
 
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(System.currentTimeMillis());
@@ -62,7 +54,6 @@ public class DailyCheckReceiver extends WakefulBroadcastReceiver {
 
         Intent intent = new Intent(c, DailyCheckReceiver.class);
         intent.setAction(ACTION_DAILY_CHECK);
-        intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
 
         PendingIntent pendingIntent = PendingIntent.getService(c, 0, intent, 0);
 
