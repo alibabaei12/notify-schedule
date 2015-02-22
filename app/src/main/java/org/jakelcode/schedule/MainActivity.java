@@ -26,6 +26,7 @@ import com.path.android.jobqueue.JobManager;
 
 import org.jakelcode.schedule.event.ReceiveScheduleEvent;
 import org.jakelcode.schedule.job.LoadingScheduleJob;
+import org.jakelcode.schedule.widget.ScheduleWidget;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -162,6 +163,9 @@ public class MainActivity extends ActionBarActivity {
                     }
                 }
             }
+
+            // Update widget
+            ScheduleWidget.notifyDataChange(mAppContext);
         } else {
             mRecyclerView.setAdapter(newAdapter);
         }

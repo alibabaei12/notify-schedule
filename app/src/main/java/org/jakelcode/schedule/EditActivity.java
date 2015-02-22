@@ -26,6 +26,7 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 
 import org.jakelcode.schedule.realm.Schedule;
 import org.jakelcode.schedule.ui.CheckableButton;
+import org.jakelcode.schedule.widget.ScheduleWidget;
 
 import java.util.Calendar;
 import java.util.List;

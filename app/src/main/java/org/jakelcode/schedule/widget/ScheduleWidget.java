@@ -3,6 +3,7 @@ package org.jakelcode.schedule.widget;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -56,6 +57,14 @@ public class ScheduleWidget extends AppWidgetProvider {
     @Override
     public void onDisabled(Context context) {
         // Enter relevant functionality for when the last widget is disabled
+    }
+
+    public static void notifyDataChange(Context context) {
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+
+        int appWidgetIds[] = appWidgetManager.getAppWidgetIds(new ComponentName(context, ScheduleWidget.class));
+
+        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_list_view);
     }
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
@@ -126,7 +135,6 @@ public class ScheduleWidget extends AppWidgetProvider {
 
         @Override
         public void onCreate() {
-            //Load from database here.
             Realm mRealm = null;
             try {
                 mRealm = Realm.getInstance(mContext);
@@ -157,6 +165,27 @@ public class ScheduleWidget extends AppWidgetProvider {
             // from the network, etc., it is ok to do it here, synchronously. The widget will remain
             // in its current state while work is being done here, so you don't need to worry about
             // locking up the widget.
+            Realm mRealm = null;
+            try {
+                mRealm = Realm.getInstance(mContext);
+
+                // Loading Schedule from database
+                RealmResults<Schedule> results = mRealm.where(Schedule.class).findAll();
+
+                // Sort it descending, so the latest ones will be displayed on top
+                // Also it is easier to obtain the last uniqueId exists in the database
+                results.sort("uniqueId", RealmResults.SORT_ORDER_DESCENDING);
+
+                mItems.clear();
+                for (Schedule s : results) {
+                    mItems.add(new ScheduleCache(s));
+                }
+
+            } finally {
+                if (mRealm != null) {
+                    mRealm.close();
+                }
+            }
         }
 
         @Override
