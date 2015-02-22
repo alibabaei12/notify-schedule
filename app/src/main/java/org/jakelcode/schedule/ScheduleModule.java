@@ -62,8 +62,8 @@ public class ScheduleModule {
 
     @Provides
     @Singleton
-    ScheduleTypePalette provideScheduleTypePalette(SharedPreferences s) {
-        return new ScheduleTypePalette(s);
+    ScheduleTypePalette provideScheduleTypePalette(SharedPreferences prefs) {
+        return new ScheduleTypePalette(prefs);
     }
 
 }

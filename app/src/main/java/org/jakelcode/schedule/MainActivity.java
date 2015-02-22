@@ -3,12 +3,14 @@ package org.jakelcode.schedule;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -45,6 +47,7 @@ public class MainActivity extends ActionBarActivity {
     @Inject Context mAppContext;
     @Inject JobManager mJobManager;
     @Inject SharedPreferences mPreferences;
+    @Inject ScheduleTypePalette mSchedulePalette;
 
     @InjectView(R.id.schedule_recycle_view) RecyclerView mRecyclerView;
     @InjectView(R.id.schedule_fab_add) FloatingActionButton mFloatActionButton;
@@ -265,16 +268,16 @@ public class MainActivity extends ActionBarActivity {
             // Colors the card by its type.
             switch (model.getType()) {
                 case ScheduleCache.NORMAL:
-                    holder.label.setColorFilter(getResources().getColor(R.color.green_100), PorterDuff.Mode.SRC_IN);
+                    holder.label.setColorFilter(Color.parseColor(mSchedulePalette.getNormalColor()), PorterDuff.Mode.SRC_IN);
                     break;
                 case ScheduleCache.EXPIRED:
-                    holder.label.setColorFilter(getResources().getColor(R.color.red_100), PorterDuff.Mode.SRC_IN);
+                    holder.label.setColorFilter(Color.parseColor(mSchedulePalette.getExpireColor()), PorterDuff.Mode.SRC_IN);
                     break;
                 case ScheduleCache.DISABLED:
-                    holder.label.setColorFilter(getResources().getColor(R.color.blue_grey_100), PorterDuff.Mode.SRC_IN);
+                    holder.label.setColorFilter(Color.parseColor(mSchedulePalette.getDisableColor()), PorterDuff.Mode.SRC_IN);
                     break;
                 case ScheduleCache.FUTURE:
-                    holder.label.setColorFilter(getResources().getColor(R.color.yellow_100), PorterDuff.Mode.SRC_IN);
+                    holder.label.setColorFilter(Color.parseColor(mSchedulePalette.getFutureColor()), PorterDuff.Mode.SRC_IN);
                     break;
                 default: break;
             }

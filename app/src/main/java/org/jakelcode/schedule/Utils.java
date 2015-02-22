@@ -15,11 +15,13 @@ import java.util.Calendar;
 public class Utils {
     public static final String PARCEL_SCHEDULE = "parcel_schedule";
     // Prefs...
-    public static final String PREF_DAILY_CHECK = "pref-daily-check"; // True = Daily Check Alarm set.
     public static final String PREF_INTERRUPT = "pref-interrupt";  // True = Schedule works in Silent.
     public static final String PREF_NOTIFICATION_MINUTE = "pref-notification-minutes"; // 10 = 10 minutes notification prior schedule.
     // Prefs colors legend
-    public static final String PREF_COLORS = "pref-main-colors";
+    public static final String PREF_COLORS_NORMAL = "pref-colors-normal";
+    public static final String PREF_COLORS_EXPIRE = "pref-colors-expire";
+    public static final String PREF_COLORS_FUTURE = "pref-colors-future";
+    public static final String PREF_COLORS_DISABLE = "pref-colors-disable";
 
     public static String formatShowDate(Context c, long millis) {
         return DateUtils.formatDateTime(c, millis, DateUtils.FORMAT_SHOW_DATE);
