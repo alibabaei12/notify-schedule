@@ -58,9 +58,10 @@ public class EditActivity extends ActionBarActivity {
     List<CheckableButton> mRepeatDayList;
 
     private long mUniqueId = -1;
+
     private long mStartTerm = -1;
     private long mEndTerm = -1;
-    private long mDisableMillis = -1; // Not yet implement
+    private long mDisableMillis = -1; // Partially implemented
 
     private int mStartHour = -1;
     private int mStartMinute = -1;
@@ -268,7 +269,11 @@ public class EditActivity extends ActionBarActivity {
         NotifyReceiver notifyReceiver = new NotifyReceiver();
         long startTimeMillis = Utils.getTimeMillis(mStartHour, mStartMinute);
         long endTimeMillis = Utils.getTimeMillis(mEndHour, mEndMinute);
-        if (System.currentTimeMillis() < endTimeMillis && DateUtils.isToday(mStartTerm)) {
+
+        if ((System.currentTimeMillis() < endTimeMillis) && // Either starts now or later.
+                (System.currentTimeMillis() > mStartTerm && System.currentTimeMillis() < mEndTerm) && // Is in term
+                mDisableMillis == -1 && // It is NOT disable
+                Utils.isDayOfWeek(mRepeatDays)) { // It is active for today
             notifyReceiver.addAlarm(mAppContext, mUniqueId, startTimeMillis, endTimeMillis);
         }
     }
@@ -289,6 +294,7 @@ public class EditActivity extends ActionBarActivity {
         }
         return sb.toString();
     }
+
 
     @OnClick({R.id.edit_time_start_text, R.id.edit_time_end_text})
     public void promptClock(final View v) {

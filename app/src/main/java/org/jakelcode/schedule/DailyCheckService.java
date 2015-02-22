@@ -46,11 +46,19 @@ public class DailyCheckService extends IntentService {
 
             // Looking through database
             RealmResults<Schedule> realmResults = mRealm.where(Schedule.class)
-                    .equalTo("startTerm", -1)
-                    .or()
-                    .beginGroup()
-                        .greaterThan("endTerm", calendar.getTimeInMillis()) //Only look through the active ones (in terms)
-                        .lessThan("startTerm", calendar.getTimeInMillis())
+                    .equalTo("disableMillis", -1) // Is not disable
+                    .beginGroup() // Days check. Make sure it should be activated today check
+                        .equalTo("days", "-1")
+                        .or()
+                        .contains("days", Integer.toString(curDay))
+                    .endGroup()
+                    .beginGroup() // Term check. It is in the working term
+                        .equalTo("startTerm", -1)
+                        .or()
+                        .beginGroup()
+                            .greaterThan("endTerm", calendar.getTimeInMillis()) //Only look through the active ones (in terms)
+                            .lessThan("startTerm", calendar.getTimeInMillis())
+                        .endGroup()
                     .endGroup()
                     .findAll();
 
@@ -66,25 +74,23 @@ public class DailyCheckService extends IntentService {
             long endTimeMillis;
 
             for (Schedule s : realmResults) {
-                if (s.getDays().contains(Integer.toString(curDay)) || s.getDays().equals("-1")) { // If it is active today
-                    // Time millis returns the hour for the day.
-                    calendar.set(Calendar.HOUR_OF_DAY, s.getStartHour());
-                    calendar.set(Calendar.MINUTE, s.getStartMinute());
-                    calendar.set(Calendar.SECOND, 0);
-                    startTimeMillis = calendar.getTimeInMillis();
+                // Time millis returns the hour for the day.
+                calendar.set(Calendar.HOUR_OF_DAY, s.getStartHour());
+                calendar.set(Calendar.MINUTE, s.getStartMinute());
+                calendar.set(Calendar.SECOND, 0);
+                startTimeMillis = calendar.getTimeInMillis();
 
-                    // Skip if it's already past.
-                    if (System.currentTimeMillis() > startTimeMillis) {
-                        continue;
-                    }
-
-                    calendar.set(Calendar.HOUR_OF_DAY, s.getEndHour());
-                    calendar.set(Calendar.MINUTE, s.getEndMinute());
-                    calendar.set(Calendar.SECOND, 0);
-                    endTimeMillis = calendar.getTimeInMillis();
-
-                    notifyReceiver.addAlarm(this, s.getUniqueId(), startTimeMillis, endTimeMillis);
+                // Skip if it's already happened.
+                if (System.currentTimeMillis() > startTimeMillis) {
+                    continue;
                 }
+
+                calendar.set(Calendar.HOUR_OF_DAY, s.getEndHour());
+                calendar.set(Calendar.MINUTE, s.getEndMinute());
+                calendar.set(Calendar.SECOND, 0);
+                endTimeMillis = calendar.getTimeInMillis();
+
+                notifyReceiver.addAlarm(this, s.getUniqueId(), startTimeMillis, endTimeMillis);
             }
 
             DailyCheckReceiver.completeWakefulIntent(intent);

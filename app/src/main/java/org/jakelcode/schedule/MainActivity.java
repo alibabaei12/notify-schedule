@@ -1,10 +1,13 @@
 package org.jakelcode.schedule;
 
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -96,15 +99,11 @@ public class MainActivity extends ActionBarActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-//
-//        switch (id) {
-//            case R.id.debug_add_daily:
-//                setDailyCheckService(true, true);
-//                break;
-//            case R.id.debug_remove_daily:
-//                setDailyCheckService(false, true);
-//                break;
-//        }
+
+        if (id == R.id.main_menu_settings) {
+            forceDailyCheckOperation();
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -180,6 +179,13 @@ public class MainActivity extends ActionBarActivity {
         } else {
             dailyReceiver.removeDailyAlarm(mAppContext);
         }
+    }
+
+    public void forceDailyCheckOperation() {
+        Intent i = new Intent(mAppContext, DailyCheckReceiver.class);
+        i.setAction(DailyCheckReceiver.ACTION_DAILY_CHECK);
+
+        sendBroadcast(i);
     }
 
     @OnClick(R.id.schedule_fab_add)

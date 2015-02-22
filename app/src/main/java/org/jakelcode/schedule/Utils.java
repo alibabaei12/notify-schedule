@@ -3,11 +3,14 @@ package org.jakelcode.schedule;
 import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
+import android.provider.Settings;
 import android.text.format.DateUtils;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 import java.util.Calendar;
+
+import io.fabric.sdk.android.services.common.SystemCurrentTimeProvider;
 
 /**
  * @author Pin Khe "Jake" Loo (29 January, 2015)
@@ -23,6 +26,8 @@ public class Utils {
     public static final String PREF_COLORS_FUTURE = "pref-colors-future";
     public static final String PREF_COLORS_DISABLE = "pref-colors-disable";
 
+    public static final Calendar cal = Calendar.getInstance();
+
     public static String formatShowDate(Context c, long millis) {
         return DateUtils.formatDateTime(c, millis, DateUtils.FORMAT_SHOW_DATE);
     }
@@ -32,7 +37,6 @@ public class Utils {
     }
 
     public static String formatShowTime(Context c, int hour_of_day, int minutes) {
-        Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(System.currentTimeMillis());
         cal.set(Calendar.HOUR_OF_DAY, hour_of_day);
         cal.set(Calendar.MINUTE, minutes);
@@ -40,7 +44,6 @@ public class Utils {
     }
 
     public static long getDateMillis(int year, int month, int day) {
-        Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(System.currentTimeMillis());
         cal.set(Calendar.YEAR, year);
         cal.set(Calendar.MONTH, month);
@@ -55,7 +58,6 @@ public class Utils {
     }
 
     public static long getTimeMillis(int hours, int minutes) {
-        Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(System.currentTimeMillis());
         cal.set(Calendar.HOUR_OF_DAY, hours);
         cal.set(Calendar.MINUTE, minutes);
@@ -67,5 +69,12 @@ public class Utils {
     public static void hideKeyboard(Activity activity) {
         InputMethodManager imm = (InputMethodManager) activity.getSystemService(Service.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(activity.getWindow().getDecorView().getRootView().getWindowToken(), 0);
+    }
+
+    public static boolean isDayOfWeek(String dayList) {
+        cal.setTimeInMillis(System.currentTimeMillis());
+        int currentDay = cal.get(Calendar.DAY_OF_WEEK);
+
+        return dayList.equals("-1") || dayList.contains(Integer.toString(currentDay));
     }
 }
