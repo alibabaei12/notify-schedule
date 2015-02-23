@@ -93,6 +93,10 @@ public class ScheduleCache implements Parcelable {
         return days;
     }
 
+    public void toggleDisable() {
+        long val = (disableMillis == 0) ? -1 : 0;
+        disableMillis = val;
+    }
 
     @IntDef({NORMAL, EXPIRED, FUTURE, DISABLED})
     public @interface ScheduleType{}

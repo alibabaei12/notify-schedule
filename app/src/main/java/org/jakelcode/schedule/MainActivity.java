@@ -26,6 +26,7 @@ import com.path.android.jobqueue.JobManager;
 
 import org.jakelcode.schedule.event.ReceiveScheduleEvent;
 import org.jakelcode.schedule.job.LoadingScheduleJob;
+import org.jakelcode.schedule.realm.Schedule;
 import org.jakelcode.schedule.widget.ScheduleWidget;
 
 import java.util.ArrayList;
@@ -38,6 +39,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 import io.fabric.sdk.android.Fabric;
+import io.realm.Realm;
 import me.grantland.widget.AutofitHelper;
 
 
@@ -52,6 +54,10 @@ public class MainActivity extends ActionBarActivity {
 
     @InjectView(R.id.schedule_recycle_view) RecyclerView mRecyclerView;
     @InjectView(R.id.schedule_fab_add) FloatingActionButton mFloatActionButton;
+
+    // Position of item in adapter to save.
+    // Only save the disableMillis
+    private final List<Integer> mPendingSavePos = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +88,28 @@ public class MainActivity extends ActionBarActivity {
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+
+        if (mPendingSavePos.size() > 0) {
+            Realm realm = Realm.getInstance(mAppContext);
+            ScheduleCache cacheData;
+            Schedule realmData;
+
+            realm.beginTransaction();
+            for (int i : mPendingSavePos) {
+                cacheData = ((ScheduleAdapter) mRecyclerView.getAdapter()).getItem(i);
+                realmData = realm.where(Schedule.class).equalTo("uniqueId", cacheData.getUniqueId()).findFirst();
+
+                // Other data is not modifiable in this activity
+                realmData.setDisableMillis(cacheData.getDisableMillis());
+            }
+            realm.commitTransaction();
+            realm.close();
+        }
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         mEventBus.unregister(this);
@@ -99,7 +127,7 @@ public class MainActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         if (id == R.id.main_menu_settings) {
-            forceDailyCheckOperation();
+            // ???
         }
 
         return super.onOptionsItemSelected(item);
@@ -181,13 +209,6 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    public void forceDailyCheckOperation() {
-        Intent i = new Intent(mAppContext, DailyCheckReceiver.class);
-        i.setAction(DailyCheckReceiver.ACTION_DAILY_CHECK);
-
-        sendBroadcast(i);
-    }
-
     @OnClick(R.id.schedule_fab_add)
     public void openEditActivity() {
         startActivity(new Intent(mAppContext, EditActivity.class));
@@ -257,9 +278,9 @@ public class MainActivity extends ActionBarActivity {
         }
 
         @Override
-        public void onBindViewHolder(ScheduleViewHolder holder, int position) {
+        public void onBindViewHolder(ScheduleViewHolder holder, final int position) {
             //Set the information... modellist -> holder
-            ScheduleCache model = mModelList.get(position);
+            final ScheduleCache model = mModelList.get(position);
 
             holder.title.setText(model.getTitle());
             AutofitHelper.create(holder.title).setMaxLines(2); // Fitting a bunch of text into 2 lines
@@ -271,16 +292,21 @@ public class MainActivity extends ActionBarActivity {
             holder.time.setText(Utils.formatShowTime(mContext, model.getStartHour(), model.getStartMinute()) + " ~ "
                     + Utils.formatShowTime(mContext, model.getEndHour(), model.getEndMinute()));
 
-            if (model.getDisableMillis() > -1) {
+            if (model.getDisableMillis() == -1) { // Not disable
                 holder.switchView.setChecked(true);
             }
 
             holder.switchView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (isChecked) {
+                    // Set to disable
+                    model.toggleDisable();
 
-                    }
+                    // Update the UI
+                    notifyItemChanged(position);
+
+                    // Pending data save
+                    mPendingSavePos.add(position);
                 }
             });
 
