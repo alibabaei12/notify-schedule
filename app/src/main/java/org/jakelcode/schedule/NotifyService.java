@@ -23,15 +23,13 @@ public class NotifyService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         final String dataString = intent.getDataString();
 
-        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        NotificationCompat.Builder nBuilder = new NotificationCompat.Builder(getApplicationContext())
-                .setSmallIcon(R.drawable.ic_alarm_grey600_24dp)
-                .setContentTitle("[NotifyService] Ring ring : ")
-                .setContentText("Data : " + dataString)
-                .setAutoCancel(true);
-        notificationManager.notify(23442, nBuilder.build());
-
         AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+
+        if (am.getRingerMode() != AudioManager.RINGER_MODE_NORMAL) { // Not in  normal..
+            buildNotification("Alarm failed to add. " + dataString);
+            NotifyReceiver.completeWakefulIntent(intent);
+            return;
+        }
 
         if (dataString.contains("normal")) {
             Log.d(TAG, "Received Ringer Normal from " + dataString);
@@ -41,6 +39,17 @@ public class NotifyService extends IntentService {
             am.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
         }
 
+        buildNotification("Alarm burst. " + dataString);
         NotifyReceiver.completeWakefulIntent(intent);
+    }
+
+    private void buildNotification(String dataString) {
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationCompat.Builder nBuilder = new NotificationCompat.Builder(getApplicationContext())
+                .setSmallIcon(R.drawable.ic_alarm_grey600_24dp)
+                .setContentTitle("NotifyService")
+                .setContentText("Data : " + dataString)
+                .setAutoCancel(true);
+        notificationManager.notify(23442, nBuilder.build());
     }
 }
