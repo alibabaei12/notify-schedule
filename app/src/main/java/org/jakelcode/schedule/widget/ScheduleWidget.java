@@ -101,10 +101,15 @@ public class ScheduleWidget extends AppWidgetProvider {
                 PendingIntent.FLAG_UPDATE_CURRENT);
         rv.setPendingIntentTemplate(R.id.widget_list_view, toastPendingIntent);
 
-        Intent newIntent = new Intent(context, EditActivity.class);
-        PendingIntent pendingNewIntent = PendingIntent.getActivity(context, 0, newIntent,
+        Intent addActivityIntent = new Intent(context, EditActivity.class);
+        PendingIntent addActivityPendingIntent = PendingIntent.getActivity(context, 0, addActivityIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
-        rv.setOnClickPendingIntent(R.id.widget_schedule_add_button, pendingNewIntent);
+        rv.setOnClickPendingIntent(R.id.widget_schedule_add_button, addActivityPendingIntent);
+
+        Intent appIntent = new Intent(context, MainActivity.class);
+        PendingIntent appPendingIntent = PendingIntent.getActivity(context, 0, appIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        rv.setOnClickPendingIntent(R.id.widget_schedule_title, appPendingIntent);
 
         appWidgetManager.updateAppWidget(appWidgetId, rv);
     }
