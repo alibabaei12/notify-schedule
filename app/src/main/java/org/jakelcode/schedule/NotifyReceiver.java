@@ -15,7 +15,12 @@ import android.support.v4.content.WakefulBroadcastReceiver;
  */
 public class NotifyReceiver extends WakefulBroadcastReceiver {
     private static final String TAG = NotifyReceiver.class.getName();
-    private static final String NOTIFY_ACTION = "org.jakelcode.schedule.action.NOTIFY_ACTION";
+    private static final String ACTION_NOTIFY_ALARM = "org.jakelcode.schedule.action.ACTION_NOTIFY_ALARM";
+
+    // Data.
+    private static final String DATA_NOTIFY_PREFIX = "jsched://";
+    public static final String DATA_ACTION_SILENT = "silent";
+    public static final String DATA_ACTION_NORMAL = "normal";
 
     private AlarmManager mAlarmManager;
 
@@ -34,16 +39,11 @@ public class NotifyReceiver extends WakefulBroadcastReceiver {
         }
         buildNotification(context, "Add alarm", "jsched://" + uniqueId);
 
-        Intent mIntent = new Intent(context, NotifyReceiver.class);
-        mIntent.setAction(NOTIFY_ACTION);
-        mIntent.setData(Uri.parse("jsched://" + uniqueId + "/silent"));
-        PendingIntent pIntent = PendingIntent.getBroadcast(context, 0, mIntent, 0);
-        mAlarmManager.set(AlarmManager.RTC_WAKEUP, startTimestamp, pIntent);
+        // Set the phone to silent mode
+        mAlarmManager.set(AlarmManager.RTC_WAKEUP, startTimestamp, getSilentIntent(context, uniqueId));
 
-        mIntent.setAction(NOTIFY_ACTION);
-        mIntent.setData(Uri.parse("jsched://" + uniqueId + "/normal"));
-        pIntent = PendingIntent.getBroadcast(context, 0, mIntent, 0);
-        mAlarmManager.set(AlarmManager.RTC_WAKEUP, endTimestamp, pIntent);
+        // Set the phone to normal mode
+        mAlarmManager.set(AlarmManager.RTC_WAKEUP, endTimestamp, getNormalIntent(context, uniqueId));
     }
 
     public void removeAlarm(Context context, long uniqueId) {
@@ -55,16 +55,32 @@ public class NotifyReceiver extends WakefulBroadcastReceiver {
         Intent mIntent = new Intent(context, NotifyReceiver.class);
 
         // Pending intent that reset phone from normal to silent mode
-        mIntent.setAction(NOTIFY_ACTION);
-        mIntent.setData(Uri.parse("jsched://" + uniqueId + "/silent"));
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, mIntent, 0);
-        mAlarmManager.cancel(pendingIntent);
+        mAlarmManager.cancel(getSilentIntent(context, uniqueId));
 
         // Pending intent that reset phone from silent to normal mode
-        mIntent.setAction(NOTIFY_ACTION);
-        mIntent.setData(Uri.parse("jsched://" + uniqueId + "/normal"));
-        pendingIntent = PendingIntent.getBroadcast(context, 0, mIntent, 0);
-        mAlarmManager.cancel(pendingIntent);
+        mAlarmManager.cancel(getNormalIntent(context, uniqueId));
+    }
+
+    // In the future will make a Builder class
+    // jsched:// 'id'  / 'type' / 'ops'
+    private Uri getDataUri(long uniqueId, String action) {
+        return Uri.parse(DATA_NOTIFY_PREFIX + Long.toString(uniqueId) + "/" + "action" + "/" + action);
+    }
+
+    private PendingIntent getSilentIntent(Context c, long uniqueId) {
+        Intent intent = new Intent(c, NotifyReceiver.class);
+        intent.setAction(ACTION_NOTIFY_ALARM);
+        intent.setData(getDataUri(uniqueId, DATA_ACTION_SILENT));
+
+        return PendingIntent.getBroadcast(c, 0, intent, 0);
+    }
+
+    private PendingIntent getNormalIntent(Context c, long uniqueId) {
+        Intent intent = new Intent(c, NotifyReceiver.class);
+        intent.setAction(ACTION_NOTIFY_ALARM);
+        intent.setData(getDataUri(uniqueId, DATA_ACTION_NORMAL));
+
+        return PendingIntent.getBroadcast(c, 0, intent, 0);
     }
 
     private void buildNotification(Context context, String title, String content) {
