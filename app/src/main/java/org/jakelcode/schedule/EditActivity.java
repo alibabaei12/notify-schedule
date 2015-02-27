@@ -6,27 +6,21 @@ import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.format.DateUtils;
-import android.util.Log;
-import android.util.TimeUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
-import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import org.jakelcode.schedule.realm.Schedule;
-import org.jakelcode.schedule.ui.CheckableButton;
-import org.jakelcode.schedule.widget.ScheduleWidget;
 
 import java.util.Calendar;
 import java.util.List;
@@ -56,7 +50,7 @@ public class EditActivity extends ActionBarActivity {
 
     @InjectViews({R.id.edit_days_sun, R.id.edit_days_m, R.id.edit_days_t, R.id.edit_days_w,
             R.id.edit_days_th, R.id.edit_days_f, R.id.edit_days_sat})
-    List<CheckableButton> mRepeatDayList;
+    List<ToggleButton> mRepeatDayList;
 
     private long mUniqueId = -1;
 
@@ -274,7 +268,6 @@ public class EditActivity extends ActionBarActivity {
         // Reset the alarm because the data is changed
         notifyReceiver.removeAlarm(mAppContext, mUniqueId);
 
-
         if ((System.currentTimeMillis() < endTimeMillis) && // Either starts now or later.
                 ((System.currentTimeMillis() > mStartTerm
                         && System.currentTimeMillis() < mEndTerm) || mStartTerm == -1) && // Is in term
@@ -293,11 +286,8 @@ public class EditActivity extends ActionBarActivity {
             }
         }
 
-        if (sb.length() == 0) {
-            sb.append("-1");
-        } else {
-            sb.deleteCharAt(sb.lastIndexOf(", "));
-        }
+        sb.deleteCharAt(sb.lastIndexOf(", "));
+
         return sb.toString();
     }
 

@@ -3,6 +3,7 @@ package org.jakelcode.schedule.ui;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
@@ -18,6 +19,11 @@ import java.util.Map;
 public class FoldLayout extends FrameLayout implements Checkable {
     private static final String TAG = FoldLayout.class.getName();
     private boolean mHideChild;
+
+    private String mTitle;
+    private long mDuration;
+    private Drawable mHideDrawable;
+    private Drawable mShowDrawable;
 
     public FoldLayout(Context context) {
         super(context);
