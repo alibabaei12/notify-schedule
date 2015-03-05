@@ -1,5 +1,5 @@
 # Scheduler - Second Android Project. 
-*Status : Active* (Warning : Not ready for daily usage yet) 
+*Status : Temp. Pause* (Warning : Not ready for daily usage yet) 
 
 This application set the phone ringer mode to silent or normal. For example, I can have the scheduler set to 2PM to 4PM (M / W). At 2PM on Monday and Wednesday, the phone will go into silent mode then at 4PM the phone will be set to normal ringer mode. This application allow multiple schedules to be added. Also, term can be set for each alarm. For example, if I set the term of a schedule from 1 January to 30 January, then on February the schedule will be inactive. 
 
